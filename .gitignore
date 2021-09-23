@@ -1,1 +1,4 @@
 .DS_Store
+
+# notebook checkpoints
+semantic_search_filtering/.ipynb_checkpoints/
