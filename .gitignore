@@ -1,7 +1,15 @@
 .DS_Store
 
 
-quick_tour/.ipynb_checkpoints
 # notebook checkpoints
-semantic_search_filtering/.ipynb_checkpoints/
+.ipynb_checkpoints
+
+
+# it threat detection data
+it_threat_detection/*.csv
+it_threat_detection/*.stats
+it_threat_detection/*.model
+it_threat_detection/*.zip
+it_threat_detection/DeepLearning*
+it_threat_detection/__MACOSX
 
