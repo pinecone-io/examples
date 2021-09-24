@@ -3,6 +3,8 @@
 # notebook checkpoints
 .ipynb_checkpoints
 
+# image search data
+image_search/tmp
 
 # it threat detection data
 it_threat_detection/*.csv
@@ -11,7 +13,6 @@ it_threat_detection/*.model
 it_threat_detection/*.zip
 it_threat_detection/DeepLearning*
 it_threat_detection/__MACOSX
-
 
 # question answering data
 question_answering/tmp
