@@ -1,6 +1,5 @@
 .DS_Store
 
-
 # notebook checkpoints
 .ipynb_checkpoints
 
@@ -13,3 +12,6 @@ it_threat_detection/*.zip
 it_threat_detection/DeepLearning*
 it_threat_detection/__MACOSX
 
+
+# question answering data
+question_answering/tmp
