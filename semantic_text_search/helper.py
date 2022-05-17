@@ -61,30 +61,18 @@ def is_index_nonempty(index):
 def get_processed_df(df):
     """Return processed dataframe ready for usage."""
     # rename columns to conventional lowercase naming with no space
-    df = df.rename(
-        columns={
-            'Show Number': 'show_id',
-            ' Air Date': 'date',
-            ' Round': 'round',
-            ' Category': 'category',
-            ' Value': 'amount',
-            ' Question': 'question',
-            ' Answer': 'answer'
-        }
-    )
-
+    df = df.rename(columns={'value': 'amount'})
     # remove the rows with no amount or nonstandard amount 
-    df = df.drop(df.index[df.amount.str.startswith('N')])
-    df.amount = df.amount.apply(lambda x: x[1:].replace(',','')).astype(int)
     df = df.drop(df.index[~df.amount.isin(JEOPARDY_STANDARD_AMOUNTS)])
-    # date dtype
-    df.date = df.date.apply(pd.to_datetime)
-    df['year'] = df.date.dt.strftime('%Y')
-    df['month'] = df.date.dt.strftime('%m')
+    # parse air date
+    df.air_date = df.air_date.apply(pd.to_datetime)
+    df['year'] = df.air_date.dt.strftime('%Y')
+    df['month'] = df.air_date.dt.strftime('%m')
     # prepare text to encode
     df['text_to_encode'] = df.question + ' ' + df.answer
     # prepare index as string
     df.index = df.index.map(str)
+    df.index.name = 'vector_id'
     return df
 
 
