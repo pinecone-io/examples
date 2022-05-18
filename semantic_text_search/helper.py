@@ -84,6 +84,47 @@ def get_tqdm_kwargs(dataframe, chunksize):
     )
 
 
+def get_ids(response):
+    """Return ids from results."""
+    matches = response['results'][0]['matches']
+    return [match['id'] for match in matches]
+
+
+def get_query_results_from_api_response(dataframe, response, query):
+    """Return pandas.DataFrame containing query_results with original text."""
+    response_df = dataframe.loc[get_ids(response), ['question', 'answer', 'amount']]
+    response_df['query'] = query
+    return response_df
+
+
+def get_query_results_from_query(query, pinecone_index, dataframe, model, top_k=1, filter_criteria=None):
+    """Return a dataframe of results from a Pinecone query."""
+    embedding = model.encode(query).tolist()
+    response = pinecone_index.query(
+        [embedding],
+        top_k=top_k,
+        filter=filter_criteria,
+        include_metadata=True,
+    )
+    return get_query_results_from_api_response(dataframe, response, query)
+
+
+def get_jeopardy_questions(queries, pinecone_index, dataframe, model):
+    """Return the questions to be used by making API requests to Pinecone."""
+    df_list = []
+    get_single_result = lambda query, amount: get_query_results_from_query(
+        query,
+        pinecone_index,
+        dataframe,
+        model,
+        filter_criteria={'amount': {'$eq': amount}}
+    )
+    for qry, amt in itertools.product(queries, JEOPARDY_STANDARD_AMOUNTS):
+        results = get_single_result(qry, amt)
+        df_list.append(results)
+    return pd.concat(df_list)
+
+
 def get_jeopardy_boards(jeopardy_questions, queries):
     """Return Jeopardy! and Double Jeopardy! boards according to various topics.
     
@@ -109,6 +150,35 @@ def get_jeopardy_boards(jeopardy_questions, queries):
     jeopardy_board_second_round = jeopardy_board[~jeopardy_round_1_filter]
     
     return jeopardy_board_first_round, jeopardy_board_second_round
+
+
+def show_answer_widget(jeopardy_questions, queries):
+    """Display answer widget in Jupyter Notebook."""
+    from ipywidgets import Dropdown, widgets
+    from IPython.display import clear_output
+
+    def handle_change(c):
+        pass
+
+    def on_button_clicked(b):
+        query, amount = dropdown_query.value, dropdown_amount.value
+        row_idx_cond = (jeopardy_questions['query'] == query) & (jeopardy_questions['amount'] == amount)
+        with output:
+            clear_output()
+            print(jeopardy_questions.loc[row_idx_cond].iloc[0], flush=True)
+
+    dropdown_query = Dropdown(
+        description="query:", 
+        options=queries)
+    dropdown_amount = Dropdown(
+        description="amount:", 
+        options=JEOPARDY_STANDARD_AMOUNTS)
+    dropdown_query.observe(handle_change, names="value")
+    dropdown_amount.observe(handle_change, names="value")
+    button = widgets.Button(description='Submit')
+    button.on_click(on_button_clicked)
+    output = widgets.Output()
+    return display(dropdown_query, dropdown_amount, button, output)
 
 
 def run_on_module_import():
