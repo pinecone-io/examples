@@ -1,4 +1,4 @@
-# YouTube Search
+![Video search image](https://github.com/pinecone-io/examples/blob/yt-search/learn/projects/yt-search/assets/youtube-search-0.png)
 
 In this directory there are notebooks and scripts that demo how we built the [YouTube Search App](https://share.streamlit.io/pinecone-io/playground/yt-search/src/server.py).
 
