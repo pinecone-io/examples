@@ -1,0 +1,23 @@
+name: Badges workflow
+on: [workflow_dispatch, push]
+jobs:
+  build:
+    name: Badges Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout first
+        id: checkout
+        uses: actions/checkout@v2
+
+      - name: Add/Update badges
+        id: badges
+        uses: trsvchn/colab-badge-action@v4
+        with:
+          check: 'all'
+          update: true
+          verbose: true
+
+      - name: push
+        uses: actions-x/commit@v6
+        with:
+          message: Update Colab badges with GitHub Actions
