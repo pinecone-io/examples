@@ -102,7 +102,7 @@ def get_query_results_from_query(query, pinecone_index, dataframe, model, top_k=
     """Return a dataframe of results from a Pinecone query."""
     embedding = model.encode(query).tolist()
     response = pinecone_index.query(
-        [embedding],
+        embedding,
         top_k=top_k,
         filter=filter_criteria,
         include_metadata=True,
