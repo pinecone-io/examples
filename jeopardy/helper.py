@@ -87,7 +87,7 @@ def get_tqdm_kwargs(dataframe, chunksize):
 
 def get_ids(response):
     """Return ids from results."""
-    matches = response['results'][0]['matches']
+    matches = response['matches']
     return [match['id'] for match in matches]
 
 
