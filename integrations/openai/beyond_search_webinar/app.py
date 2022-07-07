@@ -67,7 +67,7 @@ def create_context(question, index, mappings, lib_meta, max_len=3750, size="curi
             cur_len -= row['metadata']['n_tokens'] + 4
             if max_len - cur_len < 200:
                 break
-    return "\n\n###\n\n".join(contexts)
+    return "\n\n###\n\n".join(contexts), sources
 
 def answer_question(
     index,
