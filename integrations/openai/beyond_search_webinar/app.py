@@ -47,7 +47,7 @@ def create_context(question, index, mappings, lib_meta, max_len=3750, size="curi
     """
     q_embed = get_embedding(question, engine=f'text-search-{size}-query-001')
     res = index.query(
-        [q_embed], top_k=top_k,
+        q_embed, top_k=top_k,
         include_metadata=True, filter={
             'docs': {'$in': lib_meta}
         })
@@ -57,7 +57,7 @@ def create_context(question, index, mappings, lib_meta, max_len=3750, size="curi
     contexts = []
     sources = []
 
-    for row in res['results'][0]['matches']:
+    for row in res['matches']:
         text = mappings[row['id']]
         cur_len += row['metadata']['n_tokens'] + 4
         if cur_len < max_len:
