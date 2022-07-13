@@ -7,9 +7,9 @@ from haystack.pipelines import ExtractiveQAPipeline
 
 PINECONE_API_KEY = st.secrets["PINECONE_KEY"]
 RETRIEVER = 'mpnet'
-RETRIEVER_URL = 'flax-sentence-embeddings/all_datasets_v3_mpnet-base'
-READER = 'electra'
-READER_URL = 'deepset/electra-base-squad2'
+RETRIEVER_URL = 'sentence-transformers/multi-qa-mpnet-base-dot-v1'
+READER = 'roberta-distilled'
+READER_URL = 'deepset/roberta-base-squad2-distilled'
 INDEX = 'haystack-nhs-jul'
 DIMS = 768
 
