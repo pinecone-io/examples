@@ -1,0 +1,3 @@
+pinecone-client
+st-card-component
+git+https://github.com/jamescalam/haystack.git@pinecone-update#egg=farm-haystack[pinecone]

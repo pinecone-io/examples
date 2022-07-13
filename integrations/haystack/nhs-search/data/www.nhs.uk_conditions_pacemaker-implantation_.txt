@@ -1,0 +1,118 @@
+Cookies on the NHS website
+We've put some small files called cookies on your device to make our site work.
+We'd also like to use analytics cookies. These send information about how our site is used to services called Adobe Analytics, Hotjar and Google Analytics. We use this information to improve our site.
+Let us know if this is OK. We'll use a cookie to save your choice. You can read more about our cookies before you choose.
+I'm OK with analytics cookies Do not use analytics cookies
+Search the NHS website
+Search
+My account
+Health A-Z
+Live Well
+Mental health
+Care and support
+Pregnancy
+Browse
+More
+Home Health A to Z
+Overview
+-
+Pacemaker implantation
+Contents
+Overview
+Why it's performed
+How it's performed
+FAQs
+Risks
+If you need to have a pacemaker fitted, a small electrical device called a pacemaker will be surgically implanted in your chest.
+The pacemaker sends electrical pulses to your heart to keep it beating regularly and not too slowly.
+Having a pacemaker can significantly improve your quality of life if you have problems with a slow heart rate. The device can be lifesaving for some people.
+In the UK, pacemaker implantation is one of the most common types of heart surgery carried out, with many thousands of pacemakers fitted each year.
+How a pacemaker works
+A pacemaker is a small device about the size of a matchbox or smaller that weighs 20 to 50g. 
+It consists of a pulse generator, which has a battery and a tiny computer circuit, and 1 or more wires known as pacing leads, which attach to your heart.
+The pulse generator emits electrical impulses through the wires to your heart. The rate at which the electrical impulses are sent out is called the pacing rate.
+Almost all modern pacemakers work on demand. This means they can be programmed to adjust the discharge rate in response to your body's needs.
+If the pacemaker senses that your heart has missed a beat or is beating too slowly, it sends signals at a steady rate. 
+If it senses that your heart is beating normally by itself, it doesn't send out any signals.
+Most pacemakers have a special sensor that recognises body movement or your breathing rate.
+This allows them to speed up the discharge rate when you're active. Doctors describe this as rate responsive.
+Implantable cardioverter defibrillators (ICDs)
+An implantable cardioverter defibrillator (ICD) is a device similar to a pacemaker.
+It sends a larger electrical shock to the heart that essentially "reboots" it to get it pumping again.
+Some devices contain both a pacemaker and an ICD.
+ICDs are often used as a preventative treatment for people thought to be at risk of cardiac arrest at some point in the future.
+If the ICD senses the heart is beating at a potentially dangerous abnormal rate, it'll deliver an electrical shock to the heart. 
+This often helps return the heart to a normal rhythm.
+A conventional ICD has a pacing lead that's implanted along a vein (transvenously).
+There's also a newer type of ICD where the pacing lead is implanted under the skin (subcutaneously).
+Why do I need a pacemaker?
+The heart is essentially a pump made of muscle, which is controlled by electrical signals.
+These signals can become disrupted for several reasons, which can lead to a number of potentially dangerous heart conditions, such as:
+an abnormally slow heartbeat (bradycardia)
+an abnormally fast heartbeat (tachycardia)
+heart block (where your heart beats irregularly because the electrical signals that control your heartbeat aren't transmitted properly)
+cardiac arrest (when a problem with the heart's electrical signals cause the heart to stop beating altogether)
+Read more about why you might need a pacemaker.
+How is a pacemaker fitted?
+Having a pacemaker implanted is a relatively straightforward process.
+It's usually carried out under local anaesthetic, which means you'll be awake during the procedure.
+The generator is usually placed under the skin near the collarbone on the left side of the chest.
+The generator is attached to a wire that's guided through a blood vessel to the heart.
+The procedure usually takes about an hour, and most people are able to leave hospital on the same day or a day after surgery.
+Read more about how a pacemaker is fitted.
+After pacemaker surgery
+You should be able to return to normal physical activities soon after surgery. 
+As a precaution, it's usually recommended that strenuous activities are avoided for around 4 to 6 weeks after having a pacemaker fitted.
+After this, you should be able to do most activities and sports.
+You'll be able to feel the pacemaker, but you'll soon get used to it. It may seem a bit heavy at first, and may feel uncomfortable when you lie in certain positions.
+You'll need to attend regular check-ups to make sure your pacemaker is working properly. Most pacemakers store information about your natural heart rhythms.
+When you have follow-up appointments, your doctor can retrieve this information and use it to check how well your heart and the pacemaker are working.
+Read more about recovering from pacemaker surgery.
+Using electrical equipment
+Anything that produces a strong electromagnetic field, like an induction hob, can interfere with a pacemaker.
+But most common household electrical equipment, such as hairdryers and microwave ovens, won't be a problem as long as you use them at least 15cm (6 inches) away from your pacemaker.
+If you have an induction hob, keep a distance of at least 60cm (2ft) between the stove top and your pacemaker.
+If this is a problem, you may want to consider replacing the appliance with something more suitable.
+If you feel dizzy or feel your heart beating faster while using an electrical appliance, simply move away from it to allow your heart beat to return to normal.
+Safety
+Having a pacemaker implanted is usually a very safe procedure with a low risk of complications.
+The biggest concern is the pacemaker losing its ability to control the heartbeat, either because it malfunctions or the wire moves out of the correct position.
+It's sometimes possible to reprogramme the pacemaker to fix a malfunction using wireless signals.
+But further surgery may be needed if the pacemaker moves out of position.
+Read more about the risks of having a pacemaker.
+Alternatives to a pacemaker
+In some cases, it may be possible to control an abnormal heartbeat (arrhythmia) without having a pacemaker fitted.
+For example, atrial fibrillation can sometimes be treated with medication or a non-surgical procedure called catheter ablation.
+But not all people with an arrhythmia can be treated in this way, and in many cases a pacemaker is considered to be the most effective option.
+If your cardiologist recommends having a pacemaker fitted, ask them why they think it's the best option and discuss any possible alternative treatments you could have.
+New technology
+A new, smaller pacemaker about the size of a pill has been developed and is currently being tested in a global clinical trial.
+The new device uses wireless technology and can be implanted directly into the heart, where it delivers electrical impulses from an electrode.
+This means a pacing lead isn't required, which has the benefits of lowering the risk of infection and shortening the recovery time associated with implanting traditional pacemakers.
+Page last reviewed: 15 October 2018
+Next review due: 15 October 2021
+Next
+:
+Why it's performed
+Support links
+Home
+Health A to Z
+Live Well
+Mental health
+Care and support
+Pregnancy
+NHS services
+Coronavirus (COVID-19)
+NHS App
+Find my NHS number
+Your health records
+About the NHS
+Healthcare abroad
+Contact us
+Other NHS websites
+Profile editor login
+About us
+Accessibility statement
+Our policies
+Cookies
+© Crown copyright
