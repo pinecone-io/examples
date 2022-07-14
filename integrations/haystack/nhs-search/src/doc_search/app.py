@@ -59,28 +59,7 @@ def main():
     st.write("# NHS Q&A")
     query = st.text_input('Ask questions about health!', "")
     with st.expander("Advanced Options"):
-        # add section for filters
-        st.write("""
-        #### Metadata Filters
-
-        **Libraries**
-        """)
-        # create two cols
-        cols = st.columns(2)
-        # add filtering based on library
-        lib_filters = {}
-        for lib in libraries:
-            i = len(lib_filters.keys()) % 2
-            with cols[i]:
-                lib_filters[lib] = st.checkbox(lib, value=True)
-        st.write('**Source Type**')
-        docs_filter = st.checkbox(
-        'Docs', value=True
-        )
-        forum_filter = st.checkbox(
-            'Forums', value=True
-        )
-        st.write("---")
+        # top_k slider
         top_k = st.slider(
             "top_k",
             min_value=1,
@@ -101,8 +80,7 @@ def main():
 
     The NHS search tool allows us to ask questions based on documents scraped from the NHS website.
 
-    Ask questions like **"Who does pre-eclamptia affect?"** or **"How can I create custom
-    components?"** and return relevant results!
+    Ask questions like **"Who does pre-eclampsia affect?"** and return relevant results!
     
     The interface you see is powered and hosted by 
     [Streamlit](https://streamlit.io), and the Q&A function works using *magic*, eg
@@ -121,8 +99,6 @@ def main():
     source.
     """)
 
-    filter_used = False
-
     if query != "":
         with st.spinner("Querying, please wait..."):
             # make the query
@@ -133,8 +109,6 @@ def main():
                     "Reader": {"top_k": top_k}
                 }
             )
-        if not filter_used:
-            st.info("*Access advanced search options in the app sidebar.*")
         # display each context
         for i, doc in enumerate(prediction['answers']):
             context = doc.context
