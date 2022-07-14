@@ -1,7 +1,7 @@
 import streamlit as st
 from st_card_component import card_component
 from haystack.document_stores import PineconeDocumentStore
-from haystack.retriever.dense import EmbeddingRetriever
+from haystack.nodes.retriever import EmbeddingRetriever
 from haystack.nodes import FARMReader
 from haystack.pipelines import ExtractiveQAPipeline
 
@@ -30,7 +30,7 @@ def init_pipeline():
     # initialize the reader
     reader = FARMReader(
         model_name_or_path=READER_URL,
-        use_gpu=True
+        context_window_size=500
     )
     pipe = ExtractiveQAPipeline(reader, retriever)
     return pipe
@@ -99,28 +99,22 @@ def main():
 
     ### How it Works
 
-    The ML docs search tool takes discussions and docs from some of the best Python ML
-    libraries and collates their content into a natural language search tool.
+    The NHS search tool allows us to ask questions based on documents scraped from the NHS website.
 
-    Ask questions like **"How do I enable GPU with tensorflow?"** or **"How can I create custom
+    Ask questions like **"Who does pre-eclamptia affect?"** or **"How can I create custom
     components?"** and return relevant results!
     
     The interface you see is powered and hosted by 
-    [Streamlit](https://streamlit.io), and the Q&A function works using *magic*, otherwise
-    known as **O**pen-**D**omain **Q**uestion-**A**nswering (ODQA).
+    [Streamlit](https://streamlit.io), and the Q&A function works using *magic*, eg
+    [Haystack](https://github.com/deepset-ai/haystack) and the
+    [PineconeDocumentStore](https://www.pinecone.io/docs/integrations/haystack/).
     
-    The ODQA stack is using the
-    [Pinecone vector database](https://www.pinecone.io) with [Deepset AI's Haystack](https://github.com/deepset-ai/haystack).
-
     ---
 
     ### Usage
     
-    If you'd like to restrict your search to a specific library (such as PyTorch or
-    Streamlit) you can with the *Advanced Options* dropdown. The source of information
-    can be switched between official docs and forum discussions too!
-
-    If you'd like to return more or less result, try changing the `top_k` slider.
+    If you'd like to restrict your search to a specific number of items (`top_k`)
+    you can with the *Advanced Options* dropdown.
 
     See a relevant chunk of text that seems to just miss what you need? No problem, just
     click on the boxed arrow icon on the left of each result card to find the original
