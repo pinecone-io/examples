@@ -1,0 +1,7 @@
+scrape_configs:
+  - job_name: pinecone-project-1
+    authorization:
+      credentials: '<APIKEY>'
+    scheme: https
+    static_configs:
+      - targets: [ 'metrics.<REGION>.pinecone.io' ]
