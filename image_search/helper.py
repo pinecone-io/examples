@@ -95,7 +95,7 @@ def get_tqdm_kwargs(dataloader):
 
 def _get_ids_scores_metadatas(response):
     """Return ids and scores from Pinecone query response."""
-    matches = response['results'][0]['matches']
+    matches = response.to_dict()['matches']
     ids, scores, metadatas = zip(*[(
         match['id'], 
         match['score'], 
