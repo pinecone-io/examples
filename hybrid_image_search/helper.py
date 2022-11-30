@@ -140,13 +140,20 @@ def show_response_as_grid(response, dataset, nrows=2, ncols=2,
 
 
 def show_query_image(query_image, query_captions):
-    fig = plt.figure(figsize=(3.5,3.5))
+    fig = plt.figure(figsize=(4 ,4))
     img = normalize_float_image(query_image.permute(1, 2, 0).numpy())
     plt.imshow(img)
-    plt.title("Keywords: " + format_cpations_text(query_captions)[2:], fontsize=14)
-    fig.text(0.5, 1, f"Query Image", horizontalalignment='center', fontsize=16)
+    plt.title(format_cpations_text(query_captions))
+    fig.text(0.5, .9, f"Query Image", horizontalalignment='center', fontsize=16)
     plt.axis('off')
 
+def show_query_image_and_keywords(query_image, keywords):
+    fig = plt.figure(figsize=(4 ,4))
+    img = normalize_float_image(query_image.permute(1, 2, 0).numpy())
+    plt.imshow(img)
+    plt.title("Keywords: " + keywords, fontsize=14)
+    fig.text(0.5, 1, f"Query Image", horizontalalignment='center', fontsize=16)
+    plt.axis('off')
 
 
 def run_on_module_import():
