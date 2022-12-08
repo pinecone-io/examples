@@ -17,7 +17,7 @@ from torchvision.transforms import (
     Compose, 
     Resize, 
     CenterCrop, 
-    ToTensor, 
+    ToTensor,
     Normalize
 )
 
@@ -56,9 +56,8 @@ def set_pinecone_api_key():
 
 
 preprocess = Compose([
-    Resize(256),
-    # CenterCrop(224),
-    CenterCrop(256),
+    Resize(224),
+    CenterCrop(224),
     ToTensor(),
     # Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
@@ -140,11 +139,11 @@ def show_response_as_grid(response, dataset, nrows=2, ncols=2,
 
 
 def show_query_image(query_image, query_captions):
-    fig = plt.figure(figsize=(4 ,4))
+    fig = plt.figure(figsize=(3.5,3.5))
     img = normalize_float_image(query_image.permute(1, 2, 0).numpy())
     plt.imshow(img)
-    plt.title(format_cpations_text(query_captions))
-    fig.text(0.5, .9, f"Query Image", horizontalalignment='center', fontsize=16)
+    plt.title("Keywords: " + format_cpations_text(query_captions)[2:], fontsize=14)
+    fig.text(0.5, 1, f"Query Image", horizontalalignment='center', fontsize=16)
     plt.axis('off')
 
 def show_query_image_and_keywords(query_image, keywords):
