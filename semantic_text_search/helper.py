@@ -102,7 +102,7 @@ def get_tqdm_kwargs(dataframe, chunksize):
 
 def get_ids_scores(response):
     """Return ids and scores from Pinecone query response."""
-    matches = response['results'][0]['matches']
+    matches = response['matches']
     ids, scores = zip(*[(match['id'], match['score']) for match in matches])
     return list(ids), list(scores)
 

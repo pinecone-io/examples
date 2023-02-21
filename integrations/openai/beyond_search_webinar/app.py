@@ -33,7 +33,7 @@ def init_pinecone(index_name):
     # initialize connection to Pinecone vector DB (app.pinecone.io for API key)
     pinecone.init(
         api_key=PINECONE_KEY,
-        environment='us-west1-gcp'
+        environment="YOUR_ENV"  # find next to API key in console
     )
     index = pinecone.Index(index_name)
     stats = index.describe_index_stats()
