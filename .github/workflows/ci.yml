@@ -7,9 +7,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: run ls
+      run: ls -la
     - name: Set up Python
       uses: actions/setup-python@v3
-      run: ls -la
+
     - uses: yaananth/run-notebook@v2
       env:
         RUNNER: ${{ toJson(runner) }}
