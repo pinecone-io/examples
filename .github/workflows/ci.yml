@@ -18,7 +18,7 @@ jobs:
         SECRETS: ${{ toJson(secrets) }}
         GITHUB: ${{ toJson(github) }}
       with:
-        notebook: "./examples/pinecone/sparse/bm25.ipynb"
+        notebook: "pinecone/sparse/bm25/bm25-quora.ipynb"
         params: null
         isReport: False
         poll: True
