@@ -1,0 +1,16 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 80" width="220" height="80">
+  <!-- svg-source:excalidraw -->
+  
+  <defs>
+    <style class="style-fonts">
+      @font-face {
+        font-family: "Virgil";
+        src: url("https://excalidraw.com/Virgil.woff2");
+      }
+      @font-face {
+        font-family: "Cascadia";
+        src: url("https://excalidraw.com/Cascadia.woff2");
+      }
+    </style>
+  </defs>
+  <g stroke-linecap="round" transform="translate(10 10) rotate(0 100 30)"><path d="M15 0 L185 0 L191.56 0.94 L196.25 3.75 L197.89 5.86 L199.77 11.48 L200 45 L199.06 51.56 L197.89 54.14 L194.14 57.89 L191.56 59.06 L185 60 L15 60 L8.44 59.06 L3.75 56.25 L2.11 54.14 L0.23 48.52 L0.23 11.48 L2.11 5.86 L3.75 3.75 L8.44 0.94 L15 0" stroke="none" stroke-width="0" fill="#dfecf9"></path><path d="M15 0 M15 0 C49.44 0, 83.88 0, 185 0 M15 0 C67.49 0, 119.98 0, 185 0 M185 0 C195 0, 200 5, 200 15 M185 0 C195 0, 200 5, 200 15 M200 15 C200 26.19, 200 37.37, 200 45 M200 15 C200 23.59, 200 32.18, 200 45 M200 45 C200 55, 195 60, 185 60 M200 45 C200 55, 195 60, 185 60 M185 60 C121.58 60, 58.16 60, 15 60 M185 60 C140.12 60, 95.25 60, 15 60 M15 60 C5 60, 0 55, 0 45 M15 60 C5 60, 0 55, 0 45 M0 45 C0 38.2, 0 31.4, 0 15 M0 45 C0 37.06, 0 29.12, 0 15 M0 15 C0 5, 5 0, 15 0 M0 15 C0 5, 5 0, 15 0" stroke="#1c17ff" stroke-width="2" fill="none"></path></g><g transform="translate(21 22) rotate(0 88.046875 18.400000000000006)"><text x="88.046875" y="0" font-family="Helvetica, Segoe UI Emoji" font-size="16px" fill="#1c17ff" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">Missing data prep? Click</text><text x="88.046875" y="18.4" font-family="Helvetica, Segoe UI Emoji" font-size="16px" fill="#1c17ff" text-anchor="middle" style="white-space: pre;" direction="ltr" dominant-baseline="text-before-edge">here for the full example!</text></g></svg>
