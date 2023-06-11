@@ -16,3 +16,5 @@ it_threat_detection/__MACOSX
 
 # question answering data
 question_answering/tmp
+
+**/tmp/*
