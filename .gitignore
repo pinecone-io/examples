@@ -3,6 +3,8 @@
 # notebook checkpoints
 .ipynb_checkpoints
 
+.idea/
+
 # image search data
 image_search/tmp
 
