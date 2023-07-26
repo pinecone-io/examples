@@ -1,6 +1,6 @@
 # Pinecone.io Example Jupyter Notebooks
 
-![Pinecone Logo](./images/pinecone_logo_black.png)
+![Pinecone Logo](./images/pinecone_logo_w_background.png)
 ![Long term memory for Artificial Intelligence](./images/long-term-memory-for-ai.jpeg)
 
 # What is this repo?
