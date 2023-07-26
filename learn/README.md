@@ -18,19 +18,22 @@ Running the examples in this repo requires two things, both of which are free:
 1. a Pinecone account, represented by an API key
 1. a place to run the example Notebooks. In this case, we'll be using Google Colaboratory
 
-## Step 1. Create a Pinecone account. 
+## Step 1. Create a Pinecone account
 
-These example notebooks require Pinecone API key to run, because they create and query Pinecone vector database indexes.
+These example notebooks require a Pinecone API key to run, because they create and query Pinecone vector database indexes.
 
 Pinecone offers a generous free tier that's ideal for learning and experimenting, and even building applications that leverage vector databases.
 
 Head over to [the Pinecone dashboard](https://app.pinecone.io/) and create a new account, which you can do in under a minute. 
 
-## Step 2. Get your Pinecone API key
+## Step 2. Get your Pinecone API key and environment value
 
 On the left-hand side of the Pinecone dashboard, click the API Keys header. You'll have a default API key already available. **_Your API Key is a secret - don't share it or commit it to version control_!**
 
 ![Get your Pinecone API key](./images/pinecone-api-keys.png)
+
+Remember to take note of your environment too, for example: `us-west4-gcp-free`. You'll need this environment value when initializing Pinecone in any project.
+
 
 ## Step 3. Run a notebook via Google Colaboratory
 
@@ -41,9 +44,13 @@ without needing to worry about creating or managing cloud compute environments.
 
 You will only need to complete these next steps one time, and can then skip them in the future when running additional example Notebooks.
 
-Start by clicking File > Open Notebook in the top left menu of Google Colab and be sure to click the GitHub tab. You can then either: 
+If the example Notebook you want to run has an Open in Google Colab button, you can click it in order to get started. It will look like this:
 
-1. Paste the full URL (including the `.ipynb` extension) into the URL bar in the modal, or you can enter `pinecone-io` (which is the Pinecone GitHub organization name) and then enter `pinecone-io/examples` in the repository field: 
+![open in Google Colab](./images/open-in-collab-button.svg)
+
+Otherwise, Start by clicking File > Open Notebook in the top left menu of Google Colab and be sure to click the GitHub tab. You can then either: 
+
+Paste the full URL (including the `.ipynb` extension) into the URL bar in the modal, or you can enter `pinecone-io` (which is the Pinecone GitHub organization name) and then enter `pinecone-io/examples` in the repository field: 
 
 ![Import Notebook to Google Colab](./images/import-pinecone-notebook-in-google-collab.png)
 
@@ -71,7 +78,7 @@ With those steps complete, you can re-try opening your desired Notebook and it s
 
 As a best practice, you should never hardcode credentials such as an API key into any source code, such as a Jupyter Notebook, because it's easy to accidentally share or commit the key unintentionally, leading to compromise of your account and its resources. 
 
-The Pinecone example Jupyter Notebooks expect a Pinecone API key available in the `PINECONE_API_KEY` environment variable. 
+The Pinecone example Jupyter Notebooks expect a Pinecone API key available in the `PINECONE_API_KEY` environment variable, and a Pinecone environment variable (such as `us-west4-gcp-free`) which you can find in the [Pinecone console](https://app.pinecone.io).
 
 One way you can set your Pinecone API key securely in your Jupyter Notebook on Google Colab is to create a new cell that uses the `getpass` utility to prompt you for a secret, using a masked / password input field which hides the characters you enter from view, 
 which you can then export into an environment variable: 
