@@ -6,11 +6,11 @@
 # What is this repo?
 
 This repository is a collection of Jupyter Notebooks that you can run, download, study and modify in order to get hands-on with 
-Pinecone.io vector databases and common Machine Learning patterns, tools and algorithms.
+Pinecone.io vector databases and common AI patterns, tools and algorithms.
 
 These examples are ideal for learning and expanding your knowledge of what's possible, but if you're looking for Production-ready examples, please see the [docs](../docs) folder.
 
-Each individual example notebook lives in its own directory. A notebook file ends in `.ipynb`, and each individual Notebook demonstrates a different Machine Learning technique or usage pattern. 
+Each individual example notebook lives in its own directory. A notebook file ends in `.ipynb`, and each individual Notebook demonstrates a different AI technique or usage pattern. 
 
 # Getting started 
 
@@ -92,7 +92,7 @@ Notebook cells by setting the `PINECONE_API_KEY` environment variable.
 
 ### Step 5. Experiment, learn and enjoy!
 
-With these steps complete, you're ready to work through the Notebook to learn Machine Learning concepts and get hands-on experience using the world's most performant, cloud-native vector database.
+With these steps complete, you're ready to work through the Notebook to learn AI concepts and get hands-on experience using the world's most performant, cloud-native vector database.
 
 ## We love feedback! 
 
