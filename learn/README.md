@@ -1,12 +1,12 @@
-# Pinecone.io Example Jupyter Notebooks
+# Pinecone Examples
 
 ![Pinecone Logo](./images/pinecone_logo_w_background.png)
 ![Long term memory for Artificial Intelligence](./images/long-term-memory-for-ai.jpeg)
 
 # What is this repo?
 
-This repository is a collection of Jupyter Notebooks that you can run, download, study and modify in order to get hands-on with 
-Pinecone.io vector databases and common AI patterns, tools and algorithms.
+This repository is a collection of sample applications and Jupyter Notebooks that you can run, download, study and modify in order to get hands-on with 
+Pinecone vector databases and common AI patterns, tools and algorithms.
 
 These examples are ideal for learning and expanding your knowledge of what's possible, but if you're looking for Production-ready examples, please see the [docs](../docs) folder.
 
@@ -15,22 +15,22 @@ Each individual example notebook lives in its own directory. A notebook file end
 # Getting started 
 
 Running the examples in this repo requires two things, both of which are free: 
-1. a Pinecone.io account, represented by an API key
+1. a Pinecone account, represented by an API key
 1. a place to run the example Notebooks. In this case, we'll be using Google Colaboratory
 
-## Step 1. Create a Pinecone.io account. 
+## Step 1. Create a Pinecone account. 
 
-These example notebooks require Pinecone.io API key to run, because they create and query Pinecone vector database indexes.
+These example notebooks require Pinecone API key to run, because they create and query Pinecone vector database indexes.
 
-Pinecone.io offers a generous free tier that's ideal for learning and experimenting, and even building applications that leverage vector databases.
+Pinecone offers a generous free tier that's ideal for learning and experimenting, and even building applications that leverage vector databases.
 
-Head over to [the Pinecone.io dashboard](https://app.pinecone.io/) and create a new account, which you can do in under a minute. 
+Head over to [the Pinecone dashboard](https://app.pinecone.io/) and create a new account, which you can do in under a minute. 
 
-## Step 2. Get your Pinecone.io API key
+## Step 2. Get your Pinecone API key
 
 On the left-hand side of the Pinecone dashboard, click the API Keys header. You'll have a default API key already available. **_Your API Key is a secret - don't share it or commit it to version control_!**
 
-![Get your Pinecone.io API key](./images/pinecone-api-keys.png)
+![Get your Pinecone API key](./images/pinecone-api-keys.png)
 
 ## Step 3. Run a notebook via Google Colaboratory
 
@@ -43,7 +43,7 @@ You will only need to complete these next steps one time, and can then skip them
 
 Start by clicking File > Open Notebook in the top left menu of Google Colab and be sure to click the GitHub tab. You can then either: 
 
-1. Paste the full URL (including the `.ipynb` extension) into the URL bar in the modal, or you can enter `pinecone-io` (which is the Pinecone.io GitHub organization name) and then enter `pinecone-io/examples` in the repository field: 
+1. Paste the full URL (including the `.ipynb` extension) into the URL bar in the modal, or you can enter `pinecone-io` (which is the Pinecone GitHub organization name) and then enter `pinecone-io/examples` in the repository field: 
 
 ![Import Notebook to Google Colab](./images/import-pinecone-notebook-in-google-collab.png)
 
@@ -71,9 +71,9 @@ With those steps complete, you can re-try opening your desired Notebook and it s
 
 As a best practice, you should never hardcode credentials such as an API key into any source code, such as a Jupyter Notebook, because it's easy to accidentally share or commit the key unintentionally, leading to compromise of your account and its resources. 
 
-The Pinecone.io example Jupyter Notebooks expect a Pinecone.io API key available in the `PINECONE_API_KEY` environment variable. 
+The Pinecone example Jupyter Notebooks expect a Pinecone API key available in the `PINECONE_API_KEY` environment variable. 
 
-One way you can set your Pinecone.io API key securely in your Jupyter Notebook on Google Colab is to create a new cell that uses the `getpass` utility to prompt you for a secret, using a masked / password input field which hides the characters you enter from view, 
+One way you can set your Pinecone API key securely in your Jupyter Notebook on Google Colab is to create a new cell that uses the `getpass` utility to prompt you for a secret, using a masked / password input field which hides the characters you enter from view, 
 which you can then export into an environment variable: 
 
 ![Using getpass to securely set your API key via environment variable](./images/getpass-to-securely-set-pinecone-api-key.png)
@@ -83,10 +83,10 @@ To implement this workflow, you can click the `+ Code` button at the top of the 
 ```python
 from getpass import getpass 
 import os
-pinecone_api_key = getpass('Enter your Pinecone.io API Key: ')
+pinecone_api_key = getpass('Enter your Pinecone API Key: ')
 os.environ["PINECONE_API_KEY"] = pinecone_api_key
 ```
-When you click the right-facing arrow to run this code, you'll be prompted with the secure input field as shown in the above screenshot and you can paste your Pinecone.io API key into this field, which will hide your key from view, yet also make it available to subsequent 
+When you click the right-facing arrow to run this code, you'll be prompted with the secure input field as shown in the above screenshot and you can paste your Pinecone API key into this field, which will hide your key from view, yet also make it available to subsequent 
 Notebook cells by setting the `PINECONE_API_KEY` environment variable.
 
 
