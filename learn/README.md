@@ -6,7 +6,7 @@
 # What is this repo?
 
 This repository is a collection of sample applications and Jupyter Notebooks that you can run, download, study and modify in order to get hands-on with 
-Pinecone vector databases and common AI patterns, tools and algorithms.
+Pinecone [vector databases](https://www.pinecone.io/learn/vector-database/) and common AI patterns, tools and algorithms.
 
 These examples are ideal for learning and expanding your knowledge of what's possible, but if you're looking for Production-ready examples, please see the [docs](../docs) folder.
 
