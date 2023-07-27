@@ -16,7 +16,7 @@ Each individual example notebook lives in its own directory. A notebook file end
 
 Running the examples in this repo requires two things, both of which are free: 
 1. a Pinecone account, represented by an API key
-1. a place to run the example Notebooks. In this case, we'll be using Google Colaboratory
+1. a place to run the example Notebooks. In this case, we'll be using Google Colab
 
 ## Step 1. Create a Pinecone account
 
@@ -35,12 +35,12 @@ On the left-hand side of the Pinecone dashboard, click the API Keys header. You'
 Remember to take note of your environment too, for example: `us-west4-gcp-free`. You'll need this environment value when initializing Pinecone in any project.
 
 
-## Step 3. Run a notebook via Google Colaboratory
+## Step 3. Run a notebook via Google Colab
 
-While logged into a Google account, visit [Google Colaboratory](https://colab.research.google.com/). This is a Google service which allows you to run Jupyter Notebooks on Google infrastructure to greatly simplify experimenting, exploring and sharing your results 
+While logged into a Google account, visit [Google Colab](https://colab.research.google.com/). This is a Google service which allows you to run Jupyter Notebooks on Google infrastructure to greatly simplify experimenting, exploring and sharing your results 
 without needing to worry about creating or managing cloud compute environments.
 
-## Step 4. Perform the one-time setup for Google Colaboratory 
+## Step 4. Perform the one-time setup for Google Colab 
 
 You will only need to complete these next steps one time, and can then skip them in the future when running additional example Notebooks.
 
@@ -62,13 +62,13 @@ If this is your first time using Google Colab, you are likely to run into one or
 
 If you get an error message like this, click the Authorize with GitHub button and click through the GitHub authorization window to grant Google Colab the ability to load Jupyter Notebooks via your GitHub account.
 
-![Authorize Google Colaboratory to access GitHub](./images/google-collab-authorize-github.png)
+![Authorize Google Colab to access GitHub](./images/google-collab-authorize-github.png)
 
 **Ensure Google Colab has permission to open pop-up windows**
 
 You may also run into an error stating that you need to grant Google Colab permission to open pop-up windows. If you do, look for the UI element in your web browser asking you to grant permission to Google Colab, and grant it permission to open pop-up windows.
 
-![Authorize Google Colaboratory to access GitHub](./images/google-collab-pop-up-windows-blocked.png)
+![Authorize Google Colab to access GitHub](./images/google-collab-pop-up-windows-blocked.png)
 
 With those steps complete, you can re-try opening your desired Notebook and it should load correctly: 
 
