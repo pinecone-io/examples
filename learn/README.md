@@ -105,6 +105,12 @@ With these steps complete, you're ready to work through the Notebook to learn AI
 
 As you work through these examples, if you encounter any problems or things that are confusing or don't work quite right, please [open a new issue :octocat:](https://github.com/pinecone-io/examples/issues/new).
 
+## Getting support and further reading 
+
+Visit our: 
+* [Documentation](https://docs.pinecone.io)
+* [Support forums](https://community.pinecone.io)
+
 ## Collaboration
 
 We truly appreciate your contributions to help us improve and maintain this community resource!
