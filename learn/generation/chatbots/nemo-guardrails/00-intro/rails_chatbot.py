@@ -9,8 +9,9 @@ from langchain.output_parsers.json import parse_json_markdown
 from langchain.schema import AgentAction, AgentFinish, HumanMessage
 
 from nemoguardrails import LLMRails, RailsConfig
-import nest_asyncio
-nest_asyncio.apply()
+import asyncio
+#import nest_asyncio
+#nest_asyncio.apply()
 
 
 class OutputParser(AgentOutputParser):
@@ -49,7 +50,12 @@ def chat_history_for_nemo(messages: list):
     """Transforms a list of message objects into a list of message dicts
     to suit NeMo Guardrails requirements
     """
-    return [message_to_dict(message) for message in messages]
+    interactions = [message_to_dict(message) for message in messages].copy()
+    for msg in interactions:
+        if msg['role'] == 'ai':
+            # we must change role of 'ai' to 'assistant' otherwise NeMo will not work
+            msg['role'] = 'assistant'
+    return interactions
 
 class Guardrails:
     def __init__(
@@ -83,16 +89,12 @@ class Guardrails:
         # TODO not sure if below is needed
         self.rails.register_action(action=agent, name="agent")
 
-    async def apply_guardrails(self, chat_history: list):
+    def apply_guardrails(self, chat_history: list):
         # convert chat history to format that NeMo Guardrails expects
         chat_history = chat_history_for_nemo(chat_history)
-        print(chat_history)
         assert len(chat_history) >= 1
-        print("len(chat_history) > 1")
         # apply guardrails considering the chat history incl. most recent interactions
-        response = await self.rails.generate_async(messages=chat_history)
-        print(response)
-        response = response['content']
+        response = self.rails.generate_async(messages=chat_history)
         return response
 
 
@@ -115,7 +117,7 @@ class Chatbot:
         # initialize memory
         self.memory = ConversationBufferWindowMemory(
             memory_key="chat_history", k=5, output_key="output",
-            return_messages=True
+            return_messages=True, ai_prefix="Assistant"
         )
         # initialize tools for agent
         self.tools = load_tools(["llm-math"], llm=self.llm)
@@ -144,8 +146,29 @@ class Chatbot:
         )
         self.agent.agent.llm_chain.prompt = new_prompt
 
+    async def check_guardrails(self, inputs):
+        # get chat history and latest user message
+        new_msg = HumanMessage(content=inputs)
+        chat_history = self.memory.chat_memory.messages + [new_msg]
+        #out = self.guardrails.apply_guardrails(chat_history)
+        # convert chat history to format that NeMo Guardrails expects
+        chat_history = chat_history_for_nemo(chat_history)
+        print(chat_history)
+        assert len(chat_history) >= 1
+        # apply guardrails considering the chat history incl. most recent interactions
+        res = await self.guardrails.rails.generate_async(messages=chat_history)
+        return res
+    
+    async def async_call(self, inputs):
+        out = self.agent({'input': inputs})
+        return out
+
     async def _call(self, inputs):
-        intermediate_steps = None
+        out = await asyncio.gather(
+            self.async_call(inputs),
+            self.check_guardrails(inputs)
+        )
+        return out
         res, intermediate_steps = self.agent({'input': inputs})
         response_object = None
         if self.guardrails is not None:
@@ -155,8 +178,8 @@ class Chatbot:
             print(chat_history)
             # apply guardrails considering the chat history incl. most recent interactions
             coro = self.guardrails.apply_guardrails(chat_history)
-            res, intermediate_steps = await coro
+            res, intermediate_steps = coro
         else:
             # guardrails not enabled, so just process directly via agent
             res, intermediate_steps = self.agent({'input': inputs})
-        return res, intermediate_steps
+        return res #, intermediate_steps
