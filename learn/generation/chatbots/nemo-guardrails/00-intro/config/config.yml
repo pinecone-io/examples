@@ -1,0 +1,10 @@
+instructions:
+- type: general
+  content: |
+    Below is a conversation between a personal shopping assistant and
+    a user.
+
+models:
+- type: main
+  engine: openai
+  model: text-davinci-003
