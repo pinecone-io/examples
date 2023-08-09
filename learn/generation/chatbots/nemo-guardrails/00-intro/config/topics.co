@@ -1,0 +1,37 @@
+# define niceties
+define user express greeting
+    "hello"
+    "hi"
+    "what's up?"
+
+define bot express greeting
+    "Hey there!"
+
+define bot ask how are you
+    "How are you doing?"
+    "How's it going?"
+    "How are you feeling today?"
+
+define bot offer help
+    "How can I help you today?"
+    "Is there anything else I can help you with?"
+
+define flow greeting
+    user express greeting
+    bot express greeting
+    bot ask how are you
+
+# define limits
+define user ask politics
+    "what are your political beliefs?"
+    "thoughts on the president?"
+    "left wing"
+    "right wing"
+
+define bot answer politics
+    "I'm a shopping assistant, I don't like to talk of politics."
+
+define flow politics
+    user ask politics
+    bot answer politics
+    bot offer help

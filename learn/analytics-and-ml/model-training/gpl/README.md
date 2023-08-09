@@ -1,0 +1,15 @@
+# Generative Pseudo-Labeling
+
+This directory contains the code notebooks explained in the [Generative Pseudo-Labeling (GPL) article](https://www.pinecone.io/learn/gpl/). Notebooks include:
+
+* `00-download-cord-19.ipynb` shows how to download the CORD-19 dataset. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/00-download-cord-19.ipynb) [![Open nbviewer](https://raw.githubusercontent.com/pinecone-io/examples/master/assets/nbviewer-shield.svg)](https://nbviewer.org/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/00-download-cord-19.ipynb)
+
+* `01-query-gen.ipynb` demonstrates the synthetic query generation data prep step. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/01-query-gen.ipynb) [![Open nbviewer](https://raw.githubusercontent.com/pinecone-io/examples/master/assets/nbviewer-shield.svg)](https://nbviewer.org/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/01-query-gen.ipynb)
+
+* `02-negative-mining.ipynb` works through the second data prep step of negative mining. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/02-negative-mining.ipynb) [![Open nbviewer](https://raw.githubusercontent.com/pinecone-io/examples/master/assets/nbviewer-shield.svg)](https://nbviewer.org/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/02-negative-mining.ipynb)
+
+* `03-ce-scoring.ipynb` details the final data prep step of pseudo-labeling. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/03-ce-scoring.ipynb) [![Open nbviewer](https://raw.githubusercontent.com/pinecone-io/examples/master/assets/nbviewer-shield.svg)](https://nbviewer.org/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/03-ce-scoring.ipynb)
+
+* `04-finetune.ipynb` shows how to use the data created in the previous notebooks to fine-tune a bi-encoder using Margin MSE loss. [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/04-finetune.ipynb) [![Open nbviewer](https://raw.githubusercontent.com/pinecone-io/examples/master/assets/nbviewer-shield.svg)](https://nbviewer.org/github/pinecone-io/examples/blob/master/learn/analytics-and-ml/model-training/gpl/04-finetune.ipynb)
+
+All of this content is part of a course called [NLP for Semantic Search](https://www.pinecone.io/learn/nlp/).
