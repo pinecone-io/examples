@@ -4,18 +4,6 @@ define user express greeting
     "hi"
     "what's up?"
 
-define bot express greeting
-    "Hey there!"
-
-define bot ask how are you
-    "How are you doing?"
-    "How's it going?"
-    "How are you feeling today?"
-
-define bot offer help
-    "How can I help you today?"
-    "Is there anything else I can help you with?"
-
 define flow greeting
     user express greeting
     bot express greeting
