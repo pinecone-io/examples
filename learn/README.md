@@ -12,6 +12,12 @@ These examples are ideal for learning and expanding your knowledge of what's pos
 
 Each individual example notebook lives in its own directory. A notebook file ends in `.ipynb`, and each individual Notebook demonstrates a different AI technique or usage pattern. 
 
+# How to use Jupyter Notebooks to do AI tasks
+
+This video walks through how to load these Notebooks and get started with Google colab. It is intended as a complement to this getting started guide:
+
+[![How to use Jupyter Notebooks for Machine learning and AI tasks](https://img.youtube.com/vi/1Z8T36sZ9WI/0.jpg)](https://www.youtube.com/watch?v=1Z8T36sZ9WI)
+
 # Getting started 
 
 Running the examples in this repo requires two things, both of which are free: 
