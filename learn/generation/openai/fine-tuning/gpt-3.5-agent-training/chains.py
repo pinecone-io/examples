@@ -30,11 +30,9 @@ class VectorDBChain:
         return embeds
     
     def query(self, text: str) -> list[str]:
-        print(text)
         # create query vector
         xq = self._embed([text])[0]
-        print(xq)
-        res = self.index.query(xq, top_k=5, include_metadata=True)
+        res = self.index.query(xq, top_k=3, include_metadata=True)
         # get documents
         documents = [x.metadata["text"] for x in res.matches]
         return documents
