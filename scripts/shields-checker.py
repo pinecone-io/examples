@@ -66,8 +66,16 @@ def run(update, path, shield_error):
             colab_url = colab_url.group(0)
             if update:
                 info = link_update(colab_url, path, "colab")
+                if info["updated"]:
+                    logging.info(f"Updated: {path}")
+                else:
+                    pass
             else:
                 valid = link_valid(colab_url, path, "colab")
+                if valid:
+                    pass
+                else:
+                    logging.warning(f"Failed: {path}")
         else:
             handle_no_shield(path, "colab", shield_error)
         # now check nbviewer link
@@ -79,11 +87,11 @@ def run(update, path, shield_error):
                 if info["updated"]:
                     logging.info(f"Updated: {path}")
                 else:
-                    logging.info(f"Passed: {path}")
+                    pass
             else:
                 valid = link_valid(nbviewer_url, path, "nbviewer")
                 if valid:
-                    logging.info(f"Passed: {path}")
+                    pass
                 else:
                     logging.warning(f"Failed: {path}")
         else:
