@@ -45,6 +45,9 @@ agent = initialize_agent(
 class AsyncCallbackHandler(AsyncIteratorCallbackHandler):
     content: str = ""
     final_answer: bool = False
+    
+    def __init__(self) -> None:
+        super().__init__()
 
     async def on_llm_new_token(self, token: str, **kwargs: Any) -> None:
         self.content += token
