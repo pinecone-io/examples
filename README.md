@@ -1,9 +1,6 @@
-# Pinecone Examples
-
-![Pinecone Logo](./learn/images/pinecone_logo_w_background.png)
 ![Long term memory for Artificial Intelligence](./learn/images/long-term-memory-for-ai.jpeg)
 
-# What is this repo?
+# Pinecone Examples
 
 This repository is a collection of sample applications and Jupyter Notebooks that you can run, download, study and modify in order to get hands-on with 
 Pinecone [vector databases](https://www.pinecone.io/learn/vector-database/) and common AI patterns, tools and algorithms.
