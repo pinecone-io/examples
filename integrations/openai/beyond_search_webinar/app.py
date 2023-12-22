@@ -206,11 +206,11 @@ def main():
 
     **Pinecone index size**: {count}
 
-    **OpenAI embedding model**: *text-search-curie-query-001*
+    **OpenAI embedding model**: *text-embedding-ada-002*
 
     **Vector dimensionality**: {dims}
 
-    **OpenAI generation model**: *text-davinci-002*
+    **OpenAI generation model**: *gpt-3.5-turbo-instruct*
 
     ---
 
