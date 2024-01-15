@@ -1,5 +1,5 @@
 import streamlit as st
-import pinecone
+from pinecone import Pinecone
 import openai
 from openai.embeddings_utils import get_embedding
 import json

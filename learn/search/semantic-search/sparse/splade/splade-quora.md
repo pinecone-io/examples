@@ -225,13 +225,13 @@ We first need to initialize our connection to Pinecone to create our vector inde
 
 ```python
 import os
-import pinecone
+from pinecone import Pinecone
 
 api_key = os.getenv("PINECONE_API_KEY") or "PINECONE_API_KEY"
 # find environment next to your API key in the Pinecone console
 env = os.getenv("PINECONE_ENVIRONMENT") or "PINECONE_ENVIRONMENT"
 
-pinecone.init(api_key=api_key, environment=env)
+pc = Pinecone(api_key=api_key)
 pinecone.whoami()
 ```
 
@@ -265,7 +265,7 @@ And we connect to the index like so:
 
 
 ```python
-index = pinecone.GRPCIndex(index_name)
+index = pinecone.Index(index_name)
 ```
 
 ## Upsert

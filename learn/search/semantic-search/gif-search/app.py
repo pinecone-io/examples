@@ -1,5 +1,5 @@
 import streamlit as st
-import pinecone
+from pinecone import Pinecone
 from sentence_transformers import SentenceTransformer
 
 @st.experimental_singleton

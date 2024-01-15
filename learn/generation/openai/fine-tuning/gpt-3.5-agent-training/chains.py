@@ -1,4 +1,4 @@
-import pinecone
+from pinecone import Pinecone
 import openai
 from uuid import uuid4
 from tqdm.auto import tqdm
