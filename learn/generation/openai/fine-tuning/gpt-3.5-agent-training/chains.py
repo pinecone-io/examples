@@ -17,7 +17,7 @@ class VectorDBChain:
         pinecone_api_key: str
     ):
         pinecone.init(api_key=pinecone_api_key, environment=environment)
-        if index_name not in pinecone.list_indexes():
+        if index_name not in pinecone.list_indexes().names():
             pinecone.create_index(
                 name=index_name,metric="cosine", shards=1)
         self.index = pinecone.Index(index_name)

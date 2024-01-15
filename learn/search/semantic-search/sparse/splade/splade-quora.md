@@ -252,7 +252,7 @@ We create the index like so:
 
 
 ```python
-if index_name not in pinecone.list_indexes():
+if index_name not in pinecone.list_indexes().names():
   pinecone.create_index(
       index_name,
       pod_type='s1',
