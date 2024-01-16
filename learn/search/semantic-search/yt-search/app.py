@@ -1,5 +1,5 @@
 import streamlit as st
-import pinecone
+from pinecone import Pinecone
 from sentence_transformers import SentenceTransformer
 
 @st.experimental_singleton
@@ -48,7 +48,7 @@ query = st.text_input("Search!", "")
 
 if query != "":
     xq = retriever.encode([query]).tolist()
-    xc = index.query(xq, top_k=5, include_metadata=True)
+    xc = index.query(vector=xq, top_k=5, include_metadata=True)
     
     for context in xc['results'][0]['matches']:
         card(
