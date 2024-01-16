@@ -1,5 +1,5 @@
 import streamlit as st
-import pinecone
+from pinecone import Pinecone
 from sentence_transformers import SentenceTransformer
 
 @st.experimental_singleton
@@ -38,7 +38,7 @@ query = st.text_input("What are you looking for?", "")
 if query != "":
     with st.spinner(text="Similarity Searching..."):
         xq = retriever.encode([query]).tolist()
-        xc = index.query(xq, top_k=30, include_metadata=True)
+        xc = index.query(vector=xq, top_k=30, include_metadata=True)
         
         urls = []
         for context in xc['results'][0]['matches']:

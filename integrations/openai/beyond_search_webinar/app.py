@@ -1,5 +1,5 @@
 import streamlit as st
-import pinecone
+from pinecone import Pinecone
 import openai
 from openai.embeddings_utils import get_embedding
 import json
@@ -47,7 +47,7 @@ def create_context(question, index, mappings, lib_meta, max_len=3750, size="curi
     """
     q_embed = get_embedding(question, engine=f'text-search-{size}-query-001')
     res = index.query(
-        q_embed, top_k=top_k,
+        vector=q_embed, top_k=top_k,
         include_metadata=True, filter={
             'docs': {'$in': lib_meta}
         })
