@@ -1,0 +1,86 @@
+chat_engine:
+  context_engine:
+    context_builder:
+      type: StuffingContextBuilder
+    knowledge_base:
+      chunker:
+        params:
+          chunk_overlap: 0
+          chunk_size: 256
+          keep_separator: true
+        type: MarkdownChunker
+      params:
+        default_top_k: 5
+      record_encoder:
+        params:
+          batch_size: 400
+          model_name: text-embedding-ada-002
+        type: OpenAIRecordEncoder
+    params:
+      global_metadata_filter: null
+  history_pruner:
+    params:
+      min_history_messages: 1
+    type: RecentHistoryPruner
+  llm:
+    params: &id001
+      model_name: gpt-3.5-turbo
+    type: OpenAILLM
+  params:
+    max_context_tokens: null
+    max_generated_tokens: null
+    max_prompt_tokens: 4096
+    system_prompt: 'Use the following pieces of context to answer the user question
+      at the next messages. This context retrieved from a knowledge database and you
+      should use only the facts from the context to answer. Always remember to include
+      the source to the documents you used from their ''source'' field in the format
+      ''Source: $SOURCE_HERE''.
+
+      If you don''t know the answer, just say that you don''t know, don''t try to
+      make up an answer, use the context.
+
+      Don''t address the context directly, but use it to answer the user question
+      like it''s your own knowledge.
+
+      '
+  query_builder:
+    llm:
+      params: *id001
+      type: OpenAILLM
+    params:
+      function_description: Query search engine for relevant information
+      prompt: 'Your task is to formulate search queries for a search engine, to assist
+        in responding to the user''s question.
+
+        You should break down complex questions into sub-queries if needed.
+
+        '
+    type: FunctionCallingQueryGenerator
+create_index_params:
+  metric: cosine
+  spec:
+    serverless:
+      cloud: aws
+      region: us-west-2
+query_builder_prompt: 'Your task is to formulate search queries for a search engine,
+  to assist in responding to the user''s question.
+
+  You should break down complex questions into sub-queries if needed.
+
+  '
+system_prompt: 'Use the following pieces of context to answer the user question at
+  the next messages. This context retrieved from a knowledge database and you should
+  use only the facts from the context to answer. Always remember to include the source
+  to the documents you used from their ''source'' field in the format ''Source: $SOURCE_HERE''.
+
+  If you don''t know the answer, just say that you don''t know, don''t try to make
+  up an answer, use the context.
+
+  Don''t address the context directly, but use it to answer the user question like
+  it''s your own knowledge.
+
+  '
+tokenizer:
+  params:
+    model_name: gpt-3.5-turbo
+  type: OpenAITokenizer
