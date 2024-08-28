@@ -13,9 +13,10 @@ langchain-core = "0.2.29"
 langgraph = "0.2.3"
 langchain-ollama = "0.1.1"
 ipykernel = "6.29.5"
-html5lib = "1.1"
-beautifulsoup4 = "4.12.3"
-semantic-router = "0.0.59"
+semantic-router = "0.0.61"
+pyppeteer = "2.0.0"
+nest-asyncio = "1.6.0"
+praw = "7.7.1"
 
 
 [build-system]
