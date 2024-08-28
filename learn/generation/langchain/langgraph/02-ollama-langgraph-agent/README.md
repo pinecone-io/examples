@@ -2,20 +2,18 @@
 
 ## 1. Install Ollama
 
-Go to X and install Ollama.
+Go to [ollama.com](https://ollama.com) and install Ollama for your respective OS (we recommend running on MacOS if possible).
 
 ## 2. (Optional) Create a New Python Environment
 
 ### Via Conda
 
+*Note: you don't need to use `conda`, feel free to use your preferred package manager.*
+
 ```
 conda create -n ollama-langgraph python=3.12
 conda activate ollama-langgraph
 ```
-
-### Via venv
-
-TK
 
 ## 3. Install Required Packages
 
@@ -33,4 +31,4 @@ poetry install
 
 ## 4. Run the Notebook
 
-TK
+Head to `02-ollama-langgraph-agent.ipynb` and continue from there!
