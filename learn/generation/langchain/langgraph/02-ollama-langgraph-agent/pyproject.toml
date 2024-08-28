@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "ollama-langgraph-agent"
+version = "0.1.0"
+description = "Dependencies required for running the Ollama LangGraph Agent example"
+authors = ["\"James Briggs\" <james@pinecone.io>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+langchain = "0.2.12"
+langchain-core = "0.2.29"
+langgraph = "0.2.3"
+langchain-ollama = "0.1.1"
+ipykernel = "6.29.5"
+semantic-router = "0.0.61"
+pyppeteer = "2.0.0"
+nest-asyncio = "1.6.0"
+praw = "7.7.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
