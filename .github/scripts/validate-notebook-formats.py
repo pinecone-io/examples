@@ -28,9 +28,11 @@ def main():
 
     if has_error:
         print()
-        print(f"Validation failed for {len(failing_notebooks)} notebooks:")
+        print(f"The following notebooks did not conform to the expected JSON format:")
         for notebook in failing_notebooks:
             print(f"  - {notebook}")
+        print()
+        print("Please fix these notebooks and push again.")
         sys.exit(1)
 
 if __name__ == "__main__":
