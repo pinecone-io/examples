@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv install
+          uv sync
 
       - name: Run version census
         run: |
