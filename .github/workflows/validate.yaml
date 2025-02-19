@@ -1,0 +1,27 @@
+name: Validate Notebooks
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-notebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install nbformat
+
+      - name: Validate all notebooks
+        run: |
+          # Find all .ipynb files and validate each using nbformat
+          find . -name "*.ipynb" -print0 | while IFS= read -r -d '' file; do
+            echo "Validating $file"
+            python -m nbformat --validate "$file"
+          done
