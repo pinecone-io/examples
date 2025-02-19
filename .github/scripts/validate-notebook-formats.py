@@ -17,14 +17,20 @@ def validate_notebook(notebook_path):
 def main():
     has_error = False
     # Walk through the repository to find all .ipynb files
+    failing_notebooks = []
     for root, _, files in os.walk("."):
         for file in files:
             if file.endswith(".ipynb"):
                 notebook_path = os.path.join(root, file)
                 if not validate_notebook(notebook_path):
+                    failing_notebooks.append(notebook_path)
                     has_error = True
 
     if has_error:
+        print()
+        print(f"Validation failed for {len(failing_notebooks)} notebooks:")
+        for notebook in failing_notebooks:
+            print(f"  - {notebook}")
         sys.exit(1)
 
 if __name__ == "__main__":
