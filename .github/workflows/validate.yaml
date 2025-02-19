@@ -1,4 +1,4 @@
-name: Validate Notebooks
+name: Validate Notebook JSON
 
 on:
   push:
@@ -20,8 +20,4 @@ jobs:
 
       - name: Validate all notebooks
         run: |
-          # Find all .ipynb files and validate each using nbformat
-          find . -name "*.ipynb" -print0 | while IFS= read -r -d '' file; do
-            echo "Validating $file"
-            python -m nbformat --validate "$file"
-          done
+          python .github/scripts/validate-notebook-formats.py
