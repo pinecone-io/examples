@@ -2,6 +2,8 @@ name: Validate Notebook JSON
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:
