@@ -44,9 +44,9 @@ source "${SCRIPT_DIR}/venv/bin/activate"
 run_commands = [activate_venv]
 for cell in nb.cells:
     if cell.cell_type == "code":
-        if cell.source.startswith("!") or cell.source.startswith("%"):
-            # Remove the leading "!" or "%" and the literal "pip install"
-            command = cell.source[1:].strip()
+        if "!pip" in cell.source or "%pip" in cell.source:
+            # Replace all instances of "!pip" and "%pip" with "pip"
+            command = cell.source.replace("!pip", "pip").replace("%pip", "pip")
             run_commands.append(command)
 
 run_commands.append("""
