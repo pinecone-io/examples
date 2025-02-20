@@ -29,7 +29,12 @@ jobs:
         name: Convest test notebook into tmpdir script
         run: |
           python .github/scripts/convert-notebook.py ${{ matrix.notebook }}
-        
+    
+      - name: View run script
+        shell: bash
+        run: |
+          cat ${{ steps.convert.outputs.script_path }}
+
       - name: Run the converted notebook
         shell: bash
         run: |
