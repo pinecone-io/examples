@@ -1,0 +1,29 @@
+name: "Report: Client Version Usage"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  analyze-client-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      - name: Run version census
+        run: |
+          uv run .github/scripts/version-census.py
