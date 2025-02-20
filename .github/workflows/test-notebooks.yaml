@@ -1,7 +1,7 @@
 name: "Test: Notebook Execution"
 
 on:
-  workflow_dispatch: {}
+  workflow_call: {}
 
 jobs:
   test-notebooks:

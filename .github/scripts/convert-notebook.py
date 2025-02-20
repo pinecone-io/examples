@@ -59,7 +59,7 @@ run_commands.append("""
 deactivate
 """)
 
-# Save pip install commands to a setup.sh script
+# Save pip install commands to a run.sh script
 run_script_path = os.path.join(temp_dir, 'run.sh')
 with open(run_script_path, 'w', encoding="utf-8") as f:
     f.write("\n".join(run_commands))
