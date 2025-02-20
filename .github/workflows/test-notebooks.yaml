@@ -28,6 +28,6 @@ jobs:
         
       - name: Run the converted notebook
         run: |
-          python ${{ steps.convert.outputs.script_path }}
+          sh ${{ steps.convert.outputs.script_path }}
         env:
             PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}

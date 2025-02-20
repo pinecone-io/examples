@@ -59,11 +59,11 @@ deactivate
 """)
 
 # Save pip install commands to a setup.sh script
-setup_path = os.path.join(temp_dir, 'run.sh')
-with open(setup_path, 'w', encoding="utf-8") as f:
+run_script_path = os.path.join(temp_dir, 'run.sh')
+with open(run_script_path, 'w', encoding="utf-8") as f:
     f.write("\n".join(run_commands))
 
-print(f"Setup script saved to {setup_path}")
+print(f"Setup script saved to {run_script_path}")
 
 # Collect cells that are not pip install commands
 executable_cells = []
@@ -82,4 +82,4 @@ print(f"Script saved to {script_path}")
 
 # Output script path to github actions output
 with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-    f.write(f"script_path={script_path}\n")
+    f.write(f"script_path={run_script_path}\n")
