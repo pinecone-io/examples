@@ -1,10 +1,7 @@
 name: Validate Notebook JSON
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch: {}
 
 jobs:
   validate-notebooks:
