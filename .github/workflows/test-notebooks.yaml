@@ -1,0 +1,33 @@
+name: "Test: Notebook Execution"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test-notebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install nbconvert and dependencies
+        run: |
+          pip install nbconvert jupyter
+
+      - id: convert
+        name: Convest test notebook into tmpdir script
+        run: |
+          python .github/scripts/convert-notebook.py
+        
+      - name: Run the converted notebook
+        run: |
+          python ${{ steps.convert.outputs.script_path }}
+        env:
+            PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
