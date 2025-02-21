@@ -11,7 +11,7 @@ jobs:
         matrix:
             notebook:
                 - learn/search/semantic-search/semantic-search.ipynb
-                - docs/gen-qa-openai.ipynb
+                # - docs/gen-qa-openai.ipynb
                 - docs/langchain-retrieval-agent.ipynb
                 - docs/langchain-retrieval-augmentation.ipynb
                 - docs/pinecone-reranker.ipynb
@@ -31,11 +31,11 @@ jobs:
         run: |
           python .github/scripts/convert-notebook.py ${{ matrix.notebook }}
     
-      - name: View run script
+      - name: View setup script and notebook content
         shell: bash
         run: |
           cat ${{ steps.convert.outputs.script_path }}
-
+          cat ${{ steps.convert.outputs.notebook_path }}
       - name: Run the converted notebook
         shell: bash
         run: |

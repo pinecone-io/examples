@@ -81,6 +81,8 @@ with open(script_path, 'w', encoding="utf-8") as f:
 
 print(f"Script saved to {script_path}")
 
-# Output script path to github actions output
+# Output script and notebook path to github actions output
 with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
     f.write(f"script_path={run_script_path}\n")
+    f.write(f"notebook_path={temp_nb_path}\n")
+    
