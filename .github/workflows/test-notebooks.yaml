@@ -1,20 +1,47 @@
 name: "Test: Notebook Execution"
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      base_ref:
+        required: false
+        type: string
+        default: 'master'
 
 jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      has_changes: ${{ steps.set-matrix.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for git diff
+
+      - name: Detect changed notebooks
+        id: set-matrix
+        run: |
+          # Get list of changed .ipynb files
+          CHANGED_NOTEBOOKS=$(git diff --name-only ${{ inputs.base_ref }}...HEAD | grep '\.ipynb$' || true)
+          if [ -z "$CHANGED_NOTEBOOKS" ]; then
+            echo "No notebook changes detected"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "matrix={\"notebook\":[]}" >> $GITHUB_OUTPUT
+          else
+            # Convert newlines to JSON array format
+            NOTEBOOK_LIST=$(echo "$CHANGED_NOTEBOOKS" | jq -R -s -c 'split("\n")[:-1]')
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "matrix={\"notebook\":$NOTEBOOK_LIST}" >> $GITHUB_OUTPUT
+          fi
+
   test-notebooks:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     strategy:
-        fail-fast: false
-        matrix:
-            notebook:
-                - learn/search/semantic-search/semantic-search.ipynb
-                # - docs/gen-qa-openai.ipynb
-                - docs/langchain-retrieval-agent.ipynb
-                - docs/langchain-retrieval-augmentation.ipynb
-                - docs/pinecone-reranker.ipynb
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.detect-changes.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +54,7 @@ jobs:
         run: pip install nbformat
 
       - id: convert
-        name: Convest test notebook into tmpdir script
+        name: Convert test notebook into tmpdir script
         run: |
           python .github/scripts/convert-notebook.py ${{ matrix.notebook }}
     
@@ -46,5 +73,5 @@ jobs:
         run: |
           bash ${{ steps.convert.outputs.script_path }}
         env:
-            PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
-            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
