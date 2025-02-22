@@ -18,4 +18,4 @@ runs:
     - name: Validate all notebooks
       shell: bash
       run: |
-        python .github/scripts/validate-notebook-formats.py
+        python .github/actions/validate-json/validate-notebook-formats.py

@@ -10,7 +10,7 @@ from tempfile import mkdtemp
 from tempfile import TemporaryDirectory
 
 # Get the notebook filename from the command line
-filename = "../../" + sys.argv[1]
+filename = "../../../" + sys.argv[1]
 print(f"Processing notebook: {filename}")
 nb_source_path = os.path.join(os.path.dirname(__file__), filename)
 
