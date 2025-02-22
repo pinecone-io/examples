@@ -31,11 +31,16 @@ jobs:
         run: |
           python .github/scripts/convert-notebook.py ${{ matrix.notebook }}
     
-      - name: View setup script and notebook content
+      - name: View setup script notebook content
         shell: bash
         run: |
           cat ${{ steps.convert.outputs.script_path }}
+
+      - name: View converted notebook content
+        shell: bash
+        run: |
           cat ${{ steps.convert.outputs.notebook_path }}
+
       - name: Run the converted notebook
         shell: bash
         run: |
