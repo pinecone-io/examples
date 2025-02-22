@@ -1,0 +1,65 @@
+name: "Test: All Notebooks"
+
+on:
+  workflow_dispatch:
+    inputs:
+      directory:
+        description: 'Directory to search for notebooks'
+        required: true
+        default: 'docs'
+        type: string
+
+jobs:
+  list-notebooks:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find all *.ipynb files
+        id: set-matrix
+        run: |
+          # Get list of changed .ipynb files
+          NOTEBOOKS=$(find ${{ inputs.directory }} -name "*.ipynb" | jq -R -s -c 'split("\n")[:-1]')
+          echo "matrix={\"notebook\":$NOTEBOOKS}" >> $GITHUB_OUTPUT
+
+  test-notebooks:
+    needs: list-notebooks
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix: ${{ fromJSON(needs.list-notebooks.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install nbformat
+
+      - id: convert
+        name: Convert test notebook into tmpdir script
+        run: |
+          python .github/scripts/convert-notebook.py ${{ matrix.notebook }}
+    
+      - name: View setup script notebook content
+        shell: bash
+        run: |
+          cat ${{ steps.convert.outputs.script_path }}
+
+      - name: View converted notebook content
+        shell: bash
+        run: |
+          cat ${{ steps.convert.outputs.notebook_path }}
+
+      - name: Run the converted notebook
+        shell: bash
+        run: |
+          bash ${{ steps.convert.outputs.script_path }}
+        env:
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

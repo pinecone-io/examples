@@ -12,5 +12,5 @@ jobs:
     secrets: inherit
 
   test-notebooks:
-    uses: './.github/workflows/test-notebooks.yaml'
+    uses: './.github/workflows/test-notebooks-changed.yaml'
     secrets: inherit
