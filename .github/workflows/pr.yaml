@@ -7,8 +7,8 @@ on:
       - main
 
 jobs:
-  validate-notebook-json:
-    uses: './.github/workflows/validate-json.yaml'
+  report-client-versions:
+    uses: './.github/workflows/client-versions.yaml'
     secrets: inherit
 
   test-notebooks:
