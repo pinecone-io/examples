@@ -19,11 +19,14 @@ jobs:
         with:
           fetch-depth: 0  # Required for git diff
 
+      - name: Fetch base branch
+        run: git fetch origin ${{ inputs.base_ref }}
+
       - name: Detect changed notebooks
         id: set-matrix
         run: |
           # Get list of changed .ipynb files
-          CHANGED_NOTEBOOKS=$(git diff --name-only ${{ inputs.base_ref }}...HEAD | grep '\.ipynb$' || true)
+          CHANGED_NOTEBOOKS=$(git diff --name-only origin/${{ inputs.base_ref }}...HEAD | grep '\.ipynb$' || true)
           if [ -z "$CHANGED_NOTEBOOKS" ]; then
             echo "No notebook changes detected"
             echo "has_changes=false" >> $GITHUB_OUTPUT
