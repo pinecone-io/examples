@@ -45,7 +45,9 @@ jobs:
           fi
 
   test-notebooks:
-    needs: detect-changes
+    needs: 
+      - detect-changes
+      - validate-notebooks
     if: needs.detect-changes.outputs.has_changes == 'true'
     runs-on: ubuntu-latest
     strategy:
