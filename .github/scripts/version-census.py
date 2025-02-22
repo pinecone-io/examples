@@ -98,7 +98,8 @@ def main():
         print()
         print(f"Notebooks using {client_type}:")
         for version, notebooks in sorted(pinecone_versions.items()):
-            if client_type in version:
+            client = version.split("==")[0]
+            if client_type == client:
                 print(f"  {version}: {len(notebooks)} notebooks")
                 for notebook in notebooks:
                     print("     - ", notebook)

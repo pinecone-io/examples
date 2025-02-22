@@ -1,0 +1,21 @@
+name: "Validate JSON"
+description: "Validate JSON"
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install --upgrade pip
+        pip install nbformat
+
+    - name: Validate all notebooks
+      shell: bash
+      run: |
+        python .github/actions/validate-json/validate-notebook-formats.py

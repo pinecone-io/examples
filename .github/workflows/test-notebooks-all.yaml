@@ -1,0 +1,46 @@
+name: "Test: All Notebooks"
+
+on:
+  workflow_dispatch:
+    inputs:
+      directory:
+        description: 'Directory to search for notebooks'
+        required: true
+        default: 'docs'
+        type: string
+
+jobs:
+  validate-notebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/validate-json
+
+  list-notebooks:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find all *.ipynb files
+        id: set-matrix
+        run: |
+          # Get list of all .ipynb files in target directory
+          NOTEBOOKS=$(find ${{ inputs.directory }} -name "*.ipynb" | jq -R -s -c 'split("\n")[:-1]')
+          echo "matrix={\"notebook\":$NOTEBOOKS}" >> $GITHUB_OUTPUT
+
+  test-notebooks:
+    needs: list-notebooks
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix: ${{ fromJSON(needs.list-notebooks.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/run-notebook
+        with:
+          notebook: ${{ matrix.notebook }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
