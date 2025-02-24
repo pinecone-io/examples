@@ -82,7 +82,7 @@ for cell in nb.cells:
 script_path = os.path.join(temp_dir, 'notebook.py')
 with open(script_path, 'w', encoding="utf-8") as f:
     for cell in executable_cells:
-        f.write(cell.source + '\n')
+        f.write(cell + '\n')
 
 print(f"Script saved to {script_path}")
 
