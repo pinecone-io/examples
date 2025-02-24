@@ -72,7 +72,11 @@ executable_cells = []
 for cell in nb.cells:
     if cell.cell_type == "code":
         if "pip" not in cell.source:
-            executable_cells.append(cell)
+            #  Remove any lines that start with "!" or "%"
+            #  These are "magic" commands such as "%matplotlib inline" that 
+            #  are not executable outside of a notebook environment.
+            executable = "\n".join([line for line in cell.source.split("\n") if not line.strip().startswith("!") and not line.strip().startswith("%")])
+            executable_cells.append(executable)
 
 # Save executable cells to a notebook.py file
 script_path = os.path.join(temp_dir, 'notebook.py')
