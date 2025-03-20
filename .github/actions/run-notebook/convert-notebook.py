@@ -69,7 +69,7 @@ with open(run_script_path, 'w', encoding="utf-8") as f:
 print(f"Setup script saved to {run_script_path}")
 
 # Collect cells that are not pip install commands
-executable_cells = []
+executable_cells = ["from IPython.display import display"]
 for cell in nb.cells:
     if cell.cell_type == "code":
         if "pip" not in cell.source:
