@@ -41,6 +41,7 @@ python -m venv "${SCRIPT_DIR}/venv"
 # Activate the virtual environment
 source "${SCRIPT_DIR}/venv/bin/activate"
 pip install --upgrade pip
+pip install ipython
 """
 run_commands = [activate_venv]
 for cell in nb.cells:
