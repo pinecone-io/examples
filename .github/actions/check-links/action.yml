@@ -1,0 +1,27 @@
+name: "Check Links in Notebook"
+description: "Check Links in Notebook"
+
+inputs:
+  notebook:
+    description: "The notebook to check for broken links"
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install --upgrade pip
+        pip install nbformat
+
+    - id: convert
+      shell: bash
+      name: Check links in notebook
+      run: |
+        python .github/actions/check-links/check-links.py ${{ inputs.notebook }}
