@@ -18,6 +18,15 @@ known_good = [
     "https://www.pinecone.io",
     "https://app.pinecone.io",
 ]
+
+ignore_links = [
+    'platform.openai.com', # cloudflare blocks requests sometimes
+    'colab.research.google.com', # cloudflare blocks requests sometimes
+    'quora.com', # cloudflare blocks requests sometimes
+    'nbviewer.org' # nbviewer has a pretty strict rate limit, so we don't want to waste requests
+    'app.pinecone.io', # we don't need to spam our own homepage
+]
+
 known_good_links = set(known_good)
 for link in known_good:
     known_good_links.add(f"{link}/")
@@ -46,6 +55,9 @@ with open(nb_source_path, "r", encoding="utf-8") as f:
         if links:
             print(f"\nFile: {filename}")
             for link in sorted(links):
+                if any(ignore_link in link for ignore_link in ignore_links):
+                    print(f"  ⏭️ {link}")
+                    continue
                 if link in known_good_links:
                     good_links.add(link)
                     print(f"  ✅ {link}")
