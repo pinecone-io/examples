@@ -7,9 +7,9 @@ on:
       - main
 
 jobs:
-  # report-client-versions:
-  #   uses: './.github/workflows/client-versions.yaml'
-  #   secrets: inherit
+  report-client-versions:
+    uses: './.github/workflows/client-versions.yaml'
+    secrets: inherit
 
   test-notebooks:
     uses: './.github/workflows/test-notebooks-changed.yaml'

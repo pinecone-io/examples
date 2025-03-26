@@ -15,13 +15,13 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
 
       - name: Install dependencies
         run: |
-          uv sync
+          poetry install --with dev
 
       - name: Run version census
         run: |
-          uv run .github/scripts/version-census.py
+          poetry run .github/scripts/version-census.py
