@@ -33,7 +33,9 @@ def main():
     plugins_used = {}
     malformed_notebooks = []
 
-    for root, _, files in os.walk("."):
+    for root, _, files in os.walk(".", topdown=True):
+        if '.git' in root:
+            continue
         for file in files:
             if file.endswith(".ipynb"):
                 notebook_path = os.path.join(root, file)
