@@ -24,4 +24,4 @@ jobs:
 
       - name: Run version census
         run: |
-          poetry run .github/scripts/version-census.py
+          poetry run python3 .github/scripts/version-census.py
