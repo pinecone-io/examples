@@ -23,7 +23,7 @@ ignore_links = [
     'platform.openai.com', # cloudflare blocks requests sometimes
     'colab.research.google.com', # cloudflare blocks requests sometimes
     'quora.com', # cloudflare blocks requests sometimes
-    'nbviewer.org' # nbviewer has a pretty strict rate limit, so we don't want to waste requests
+    'nbviewer.org', # nbviewer has a pretty strict rate limit, so we don't want to waste requests
     'app.pinecone.io', # we don't need to spam our own homepage
 ]
 
