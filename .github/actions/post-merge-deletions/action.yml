@@ -1,0 +1,32 @@
+name: "Post Merge: Process Deleted Notebook"
+description: "Invoke script to process deleted notebook"
+
+inputs:
+  deleted_notebook:
+    description: "The notebook that has been deleted"
+    required: true
+  PINECONE_API_KEY:
+    description: "The Pinecone API key"
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install --upgrade pip
+        pip install nbformat requests pinecone
+
+    - id: process-changes
+      shell: bash
+      name: Process deletion of ${{ inputs.deleted_notebook }}
+      run: |
+        python .github/actions/post-merge-deletions/process-deletions.py ${{ inputs.deleted_notebook }}
+      env:
+        PINECONE_API_KEY: ${{ inputs.PINECONE_API_KEY }}
