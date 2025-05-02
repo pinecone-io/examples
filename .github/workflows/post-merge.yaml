@@ -1,0 +1,120 @@
+name: "Post Merge"
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      modified_notebooks: ${{ steps.set-modifications.outputs.modified_notebooks }}
+      has_modifications: ${{ steps.set-modifications.outputs.has_modifications }}
+      deleted_notebooks: ${{ steps.set-deletions.outputs.deleted_notebooks }}
+      has_deletions: ${{ steps.set-deletions.outputs.has_deletions }}
+      added_notebooks: ${{ steps.set-additions.outputs.added_notebooks }}
+      has_additions: ${{ steps.set-additions.outputs.has_additions }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for git diff
+
+      - name: Detect changed notebooks
+        id: set-modifications
+        run: |
+          # Get list of changed .ipynb files
+          # --diff-filter=M: Only modifications (non-deletions)
+          CHANGED_NOTEBOOKS=$(git diff --diff-filter=M --name-only --no-renames HEAD^ HEAD | grep '\.ipynb$' || true)
+          if [ -z "$CHANGED_NOTEBOOKS" ]; then
+            echo "No notebook modifications detected"
+            echo "has_modifications=false" >> $GITHUB_OUTPUT
+            echo "modified_notebooks={\"notebook\":[]}" >> $GITHUB_OUTPUT
+          else
+            # Convert newlines to JSON array format
+            NOTEBOOK_LIST=$(echo "$CHANGED_NOTEBOOKS" | jq -R -s -c 'split("\n")[:-1]')
+            echo "has_modifications=true" >> $GITHUB_OUTPUT
+            echo "modified_notebooks={\"notebook\":$NOTEBOOK_LIST}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect deleted notebooks
+        id: set-deletions
+        run: |
+          # Get list of deleted .ipynb files
+          # --diff-filter=D: Only deletions
+          DELETED_NOTEBOOKS=$(git diff --diff-filter=D --name-only --no-renames HEAD^ HEAD | grep '\.ipynb$' || true)
+          if [ -z "$DELETED_NOTEBOOKS" ]; then
+            echo "No notebook deletions detected"
+            echo "has_deletions=false" >> $GITHUB_OUTPUT
+            echo "deleted_notebooks={\"notebook\":[]}" >> $GITHUB_OUTPUT
+          else
+            # Convert newlines to JSON array format
+            NOTEBOOK_LIST=$(echo "$DELETED_NOTEBOOKS" | jq -R -s -c 'split("\n")[:-1]')
+            echo "has_deletions=true" >> $GITHUB_OUTPUT
+            echo "deleted_notebooks={\"notebook\":$NOTEBOOK_LIST}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Detect added notebooks
+        id: set-additions
+        run: |
+          # Get list of added .ipynb files
+          # --diff-filter=A: Only additions
+          ADDED_NOTEBOOKS=$(git diff --diff-filter=A --name-only --no-renames HEAD^ HEAD | grep '\.ipynb$' || true)
+          if [ -z "$ADDED_NOTEBOOKS" ]; then
+            echo "No notebook additions detected"
+            echo "has_additions=false" >> $GITHUB_OUTPUT
+            echo "added_notebooks={\"notebook\":[]}" >> $GITHUB_OUTPUT
+          else
+            # Convert newlines to JSON array format
+            NOTEBOOK_LIST=$(echo "$ADDED_NOTEBOOKS" | jq -R -s -c 'split("\n")[:-1]')
+            echo "has_additions=true" >> $GITHUB_OUTPUT
+            echo "added_notebooks={\"notebook\":$NOTEBOOK_LIST}" >> $GITHUB_OUTPUT
+          fi
+
+  process-modified-notebooks:
+    needs: 
+      - detect-changes
+    if: needs.detect-changes.outputs.has_modifications == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.detect-changes.outputs.modified_notebooks) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/post-merge-modifications
+        with:
+          modified_notebook: ${{ matrix.notebook }}
+          PINECONE_API_KEY: ${{ secrets.ARJUN_PINECONE_API_KEY }} # TODO: update for arjun project
+
+  process-deleted-notebooks:
+    needs: 
+      - detect-changes
+    if: needs.detect-changes.outputs.has_deletions == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.detect-changes.outputs.deleted_notebooks) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/post-merge-deletions
+        with:
+          deleted_notebook: ${{ matrix.notebook }}
+          PINECONE_API_KEY: ${{ secrets.ARJUN_PINECONE_API_KEY }} # TODO: update for arjun project
+
+  process-added-notebooks:
+    needs: 
+      - detect-changes
+    if: needs.detect-changes.outputs.has_additions == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.detect-changes.outputs.added_notebooks) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/post-merge-additions
+        with:
+          added_notebook: ${{ matrix.notebook }}
+          PINECONE_API_KEY: ${{ secrets.ARJUN_PINECONE_API_KEY }} # TODO: update for arjun project

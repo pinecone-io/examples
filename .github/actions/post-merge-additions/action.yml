@@ -1,0 +1,33 @@
+name: "Post Merge: Process Added Notebook"
+description: "Invoke script to process added notebook"
+
+inputs:
+  added_notebook:
+    description: "The notebook that has been added"
+    required: true
+  PINECONE_API_KEY:
+    description: "The Pinecone API key"
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install --upgrade pip
+        pip install nbformat requests pinecone
+
+    - id: process-changes
+      shell: bash
+      name: Process addition of ${{ inputs.added_notebook }}
+      run: |
+        python .github/actions/post-merge-additions/process-additions.py
+      env:
+        PINECONE_API_KEY: ${{ inputs.PINECONE_API_KEY }}
+        NOTEBOOK: ${{ inputs.added_notebook }}
