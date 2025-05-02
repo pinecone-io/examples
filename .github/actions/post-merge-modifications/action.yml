@@ -27,6 +27,7 @@ runs:
       shell: bash
       name: Process changes to ${{ inputs.modified_notebook }}
       run: |
-        python .github/actions/post-merge-modifications/process-modifications.py ${{ inputs.modified_notebook }}
+        python .github/actions/post-merge-modifications/process-modifications.py
       env:
         PINECONE_API_KEY: ${{ inputs.PINECONE_API_KEY }}
+        NOTEBOOK: ${{ inputs.modified_notebook }}

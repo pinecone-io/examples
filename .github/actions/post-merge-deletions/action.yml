@@ -27,6 +27,7 @@ runs:
       shell: bash
       name: Process deletion of ${{ inputs.deleted_notebook }}
       run: |
-        python .github/actions/post-merge-deletions/process-deletions.py ${{ inputs.deleted_notebook }}
+        python .github/actions/post-merge-deletions/process-deletions.py
       env:
         PINECONE_API_KEY: ${{ inputs.PINECONE_API_KEY }}
+        NOTEBOOK: ${{ inputs.deleted_notebook }}
