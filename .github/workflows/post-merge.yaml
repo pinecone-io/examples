@@ -11,6 +11,10 @@ permissions:
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
+    env:
+      # This should be a space-separated list of paths to include when looking for changed files.
+      # You can specify paths to specific individual files, or a folder to include everything in that folder.
+      DIFF_WHITELIST: "docs/* path/to/folder path/to/file.ipynb"
     outputs:
       modified_notebooks: ${{ steps.set-modifications.outputs.modified_notebooks }}
       has_modifications: ${{ steps.set-modifications.outputs.has_modifications }}
@@ -28,7 +32,7 @@ jobs:
         run: |
           # Get list of changed .ipynb files
           # --diff-filter=M: Only modifications (non-deletions)
-          CHANGED_NOTEBOOKS=$(git diff --diff-filter=M --name-only --no-renames HEAD^ HEAD | grep '\.ipynb$' || true)
+          CHANGED_NOTEBOOKS=$(git diff --diff-filter=M --name-only --no-renames HEAD^ HEAD -- $(echo "$DIFF_WHITELIST") | grep '\.ipynb$' || true)
           if [ -z "$CHANGED_NOTEBOOKS" ]; then
             echo "No notebook modifications detected"
             echo "has_modifications=false" >> $GITHUB_OUTPUT
@@ -45,7 +49,7 @@ jobs:
         run: |
           # Get list of deleted .ipynb files
           # --diff-filter=D: Only deletions
-          DELETED_NOTEBOOKS=$(git diff --diff-filter=D --name-only --no-renames HEAD^ HEAD | grep '\.ipynb$' || true)
+          DELETED_NOTEBOOKS=$(git diff --diff-filter=D --name-only --no-renames HEAD^ HEAD -- $(echo "$DIFF_WHITELIST") | grep '\.ipynb$' || true)
           if [ -z "$DELETED_NOTEBOOKS" ]; then
             echo "No notebook deletions detected"
             echo "has_deletions=false" >> $GITHUB_OUTPUT
@@ -62,7 +66,7 @@ jobs:
         run: |
           # Get list of added .ipynb files
           # --diff-filter=A: Only additions
-          ADDED_NOTEBOOKS=$(git diff --diff-filter=A --name-only --no-renames HEAD^ HEAD | grep '\.ipynb$' || true)
+          ADDED_NOTEBOOKS=$(git diff --diff-filter=A --name-only --no-renames HEAD^ HEAD -- $(echo "$DIFF_WHITELIST") | grep '\.ipynb$' || true)
           if [ -z "$ADDED_NOTEBOOKS" ]; then
             echo "No notebook additions detected"
             echo "has_additions=false" >> $GITHUB_OUTPUT
