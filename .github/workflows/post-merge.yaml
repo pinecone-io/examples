@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - jhamon/ci-run-on-changes-merged
 
 permissions:
   contents: read
@@ -102,7 +103,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Required for git diff
-          
+
       - name: Detect added notebooks
         id: set-matrix
         run: |
