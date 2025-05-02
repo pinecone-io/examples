@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   detect-modified-notebooks:
     runs-on: ubuntu-latest
