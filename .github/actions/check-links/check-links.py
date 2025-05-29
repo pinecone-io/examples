@@ -58,6 +58,9 @@ with open(nb_source_path, "r", encoding="utf-8") as f:
                 if any(ignore_link in link for ignore_link in ignore_links):
                     print(f"  ⏭️ {link}")
                     continue
+                if "{" in link: # template strings don't need to be checked
+                    print(f"  ⏭️ {link}")
+                    continue
                 if link in known_good_links:
                     good_links.add(link)
                     print(f"  ✅ {link}")
