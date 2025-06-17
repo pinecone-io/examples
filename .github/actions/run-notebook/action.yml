@@ -11,6 +11,9 @@ inputs:
   OPENAI_API_KEY:
     description: "The OpenAI API key"
     required: true
+  HF_TOKEN:
+    description: "The Hugging Face token"
+    required: true
 
 runs:
   using: 'composite'
@@ -49,3 +52,4 @@ runs:
       env:
         PINECONE_API_KEY: ${{ inputs.PINECONE_API_KEY }}
         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
+        HF_TOKEN: ${{ inputs.HF_TOKEN }}

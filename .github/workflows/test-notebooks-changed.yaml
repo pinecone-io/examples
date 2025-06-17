@@ -60,6 +60,7 @@ jobs:
           notebook: ${{ matrix.notebook }}
           PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
 
   check-links:
     needs:
