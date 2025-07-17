@@ -70,9 +70,30 @@ print(f"Setup script saved to {run_script_path}")
 
 # Collect cells that are not pip install commands
 executable_cells = ["from IPython.display import display"]
+
+# pip commands we want to ignore:
+
+PIP_BLACKLIST = [
+    "pip install",
+    "pip uninstall",
+    "pip freeze",
+    "pip list",
+    "pip show",
+    "pip check",
+    "pip download",
+    "pip config",
+    "pip search",
+    "pip wheel",
+    "pip hash",
+    "pip cache",
+    "pip index"
+]
+
+
 for cell in nb.cells:
     if cell.cell_type == "code":
-        if "pip" not in cell.source:
+        # ensures the cell is not a pip command, avoid hitting words that contain "pip"
+        if not any(cmd in cell.source for cmd in PIP_BLACKLIST):
             #  Remove any lines that start with "!" or "%"
             #  These are "magic" commands such as "%matplotlib inline" that 
             #  are not executable outside of a notebook environment.
