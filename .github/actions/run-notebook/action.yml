@@ -14,6 +14,9 @@ inputs:
   HF_TOKEN:
     description: "The Hugging Face token"
     required: true
+  ANTHROPIC_API_KEY:
+    description: "The Anthropic API key"
+    required: true
 
 runs:
   using: 'composite'
@@ -53,3 +56,4 @@ runs:
         PINECONE_API_KEY: ${{ inputs.PINECONE_API_KEY }}
         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
         HF_TOKEN: ${{ inputs.HF_TOKEN }}
+        ANTHROPIC_API_KEY: ${{ inputs.ANTHROPIC_API_KEY }}
