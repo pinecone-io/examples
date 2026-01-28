@@ -1,0 +1,66 @@
+---
+alwaysApply: true
+---
+# Notebook Guidelines
+
+## Structure
+
+- Start with a brief introduction explaining what the notebook demonstrates
+- Include a prerequisites section listing required packages and API keys
+- Use markdown cells to explain each major step before the code
+- Group related cells logically with clear section headers
+- End with a summary or next steps section when appropriate
+- Keep notebooks focused on a single topic or workflow
+
+## Documentation
+
+- All helper functions and classes should have clear docstrings explaining their purpose
+- Markdown cells should provide context and explain the "why" behind each step
+- Keep explanations concise but complete enough for someone new to the topic
+- Review existing notebooks in the repository to maintain consistent style and terminology
+
+## Code Quality
+
+- Write clear, readable code that prioritizes understanding over cleverness
+- Follow Python best practices and PEP 8 style guidelines
+- Use meaningful variable names that reflect the domain (e.g., `query_embedding` not `x`)
+- Use named keyword arguments instead of positional arguments
+- Add comments to explain the "why" when the code alone isn't self-explanatory
+- Include error handling where appropriate to demonstrate production-ready patterns
+
+## Cell Organization
+
+- Keep each cell focused on a single concept or step
+- Avoid overly long cells—break them up with markdown explanations
+- Group all imports in the first code cell
+- Don't reuse variable names for different purposes across cells
+
+## Execution and Validation
+
+- Ensure the notebook runs cleanly with "Restart Kernel and Run All"
+- Cells must be executable in order from top to bottom
+- Avoid cells that depend on out-of-order execution
+- Check that all markdown renders correctly
+- Validate any links in documentation are not broken
+
+## Output
+
+- Show meaningful output that illustrates the concept being taught
+- Clear or truncate large outputs that add noise
+- Add print statements to show intermediate results when helpful
+
+## Progress and Feedback
+
+- Use `tqdm` or status messages for long-running operations
+- Indicate expected wait times for slow cells when helpful
+
+## Reproducibility
+
+- Set random seeds when using randomness
+- Note external dependencies clearly (API keys, data files)
+- Document package versions when behavior is version-sensitive
+
+## Resource Management
+
+- Include cleanup cells at the end (delete indexes, close connections)
+- Use context managers where appropriate

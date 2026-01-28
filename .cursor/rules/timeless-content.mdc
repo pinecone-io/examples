@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+---
+# Timeless Content Guidelines
+
+Avoid language or references that will become stale:
+- Do not include specific dates, years, or time references (e.g., "as of 2024", "new in January")
+- Avoid phrases like "recently released", "coming soon", "cutting-edge", or "state-of-the-art"
+- Do not reference specific version numbers in prose unless absolutely necessary for compatibility
+- Use evergreen phrasing: "This example demonstrates..." rather than "This new feature allows..."
+
+Keep descriptions professional and factual:
+- Focus on what the code does, not marketing language
+- Describe the benefits or purpose of code honestly, without exaggeration
+- Describe capabilities objectively without superlatives
+- Let the code speak for itself
