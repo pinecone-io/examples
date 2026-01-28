@@ -1,0 +1,37 @@
+name: "Lint"
+
+on:
+  workflow_call:
+
+jobs:
+  lint-changed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed
+        run: |
+          CHANGED=$(git diff --diff-filter=d --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(py|ipynb)$' || true)
+          echo "files=$CHANGED" >> $GITHUB_OUTPUT
+          echo "has_changes=$([[ -n "$CHANGED" ]] && echo true || echo false)" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        if: steps.changed.outputs.has_changes == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        if: steps.changed.outputs.has_changes == 'true'
+        run: pip install ruff
+
+      - name: Run ruff check
+        if: steps.changed.outputs.has_changes == 'true'
+        run: echo "${{ steps.changed.outputs.files }}" | xargs ruff check
+
+      - name: Run ruff format check
+        if: steps.changed.outputs.has_changes == 'true'
+        run: echo "${{ steps.changed.outputs.files }}" | xargs ruff format --check

@@ -7,6 +7,9 @@ on:
       - main
 
 jobs:
+  lint:
+    uses: './.github/workflows/lint.yaml'
+
   report-client-versions:
     uses: './.github/workflows/client-versions.yaml'
     secrets: inherit

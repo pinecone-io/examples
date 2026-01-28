@@ -12,7 +12,7 @@ This repo contains:
 1. Production ready examples in [`./docs`](./docs) that receive regular review and support from the Pinecone engineering team
 2. Examples optimized for learning and exploration of AI techniques in [`./learn`](./learn) and patterns for building different kinds of applications, created and maintained by the Pinecone Developer Advocacy team. 
 
-We appreciate your feedback and contributions. Please see our [contribution guide](./learn/README.md#collaboration) for information on how to contribute to this repo. 
+We appreciate your feedback and contributions. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for information on how to contribute to this repo. 
 
 # Getting started 
 
@@ -28,9 +28,6 @@ Visit our:
 * [Documentation](https://docs.pinecone.io)
 * [Support forums](https://community.pinecone.io)
 
-## Collaboration
+## Contributing
 
-We truly appreciate your contributions to help us improve and maintain this community resource!
-
-If you've got ideas for improvements, want to contribute a quick fix like correcting a typo, or patching an obvious bug, feel free to open a new issue or even a pull request. If you're considering a larger or more involved change to this repository, its organization or the functionality of 
-one of the examples, please first [open a new issue :octocat:](https://github.com/pinecone-io/examples/issues/new) and state your proposed changes so we discuss them together before you invest a ton of time or effort into making changes. Thanks for your understanding and collaboration. 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute. 
