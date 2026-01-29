@@ -1,12 +1,16 @@
-from pinecone import Pinecone
+from pinecone import Pinecone, ServerlessSpec
 import openai
 from uuid import uuid4
 from tqdm.auto import tqdm
+
+# text-embedding-ada-002 dimension
+EMBEDDING_DIM = 1536
 
 
 class VectorDBChain:
     name: str = "Vector Search Tool"
     description: str = "A tool for finding information about a topic."
+
     class Config:
         arbitrary_types_allowed = True
 
@@ -14,21 +18,23 @@ class VectorDBChain:
         self,
         index_name: str,
         environment: str,
-        pinecone_api_key: str
+        pinecone_api_key: str,
     ):
-        pinecone.init(api_key=pinecone_api_key, environment=environment)
-        if index_name not in pinecone.list_indexes().names():
-            pinecone.create_index(
-                name=index_name,metric="cosine", shards=1)
-        self.index = pinecone.Index(index_name)
+        pc = Pinecone(api_key=pinecone_api_key)
+        if index_name not in pc.list_indexes().names():
+            pc.create_index(
+                name=index_name,
+                dimension=EMBEDDING_DIM,
+                metric="cosine",
+                spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+            )
+        self.index = pc.Index(index_name)
 
     def _embed(self, texts: list[str]):
-        res = openai.Embedding.create(
-            input=texts, engine="text-embedding-ada-002"
-        )
+        res = openai.Embedding.create(input=texts, engine="text-embedding-ada-002")
         embeds = [x["embedding"] for x in res["data"]]
         return embeds
-    
+
     def query(self, text: str) -> list[str]:
         # create query vector
         xq = self._embed([text])[0]
@@ -45,7 +51,7 @@ class VectorDBChain:
             # create document/context embeddings
             xd = self._embed(batch)
             # create metadata
-            metadata = [{"document": x} for x in batch]
+            metadata = [{"text": x} for x in batch]
             ids = [str(uuid4()) for _ in batch]
             # add to index
             self.index.upsert(vectors=zip(ids, xd, metadata))
