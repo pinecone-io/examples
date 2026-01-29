@@ -68,7 +68,14 @@ def invoke_cursor(prompt: str, worktree: Path, worker_id: str) -> subprocess.Com
         log_file = LOG_DIR / f"{worker_id}-{timestamp}.log"
         
         result = subprocess.run(
-            ["agent", "--print", "--workspace", str(worktree), prompt],
+            [
+                "agent",
+                "--print",
+                "--force",
+                "--approve-mcps",
+                "--workspace", str(worktree),
+                prompt,
+            ],
             capture_output=True,
             text=True,
         )
