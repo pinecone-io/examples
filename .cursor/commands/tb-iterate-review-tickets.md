@@ -1,6 +1,8 @@
 # tb-iterate-review-tickets
 
-Find one ticket in review that matches this worker's shard and iterate on its PR.
+Find one ticket in review that matches this worker's shard, then actively work on its PR.
+
+**IMPORTANT**: Do not just list PRs or tickets. Pick ONE and actively work on it.
 
 ## Parse Shard Info
 
@@ -8,11 +10,9 @@ This command is invoked with shard information in the prompt:
 - Worker shard index (e.g., 0, 1, 2)
 - Total workers (e.g., 3)
 
-Use these values to filter tickets.
-
 ## Find a Ticket
 
-Query Linear for tickets in project "Notebook Examples" with label "docs:examples" 
+Use Linear MCP to query for tickets in project "Notebook Examples" with label "docs:examples" 
 that have status "In Review".
 
 Filter the results to only tickets where:
@@ -23,24 +23,32 @@ For example, if the ticket ID is "EXA-123" and this is worker 1 of 3:
 - Check: 123 % 3 = 0, which does not equal 1
 - Skip this ticket
 
-If no matching tickets are found, log "No tickets for this shard" and exit.
+**Pick the first matching ticket.** If no matching tickets are found, say "No tickets for this shard" and exit.
 
 ## Find the Associated PR
 
-From the matching ticket, find the associated GitHub PR. The PR link should be in:
-- The ticket description
-- A comment on the ticket
-- Or search GitHub for open PRs that mention the ticket ID
+From the selected ticket, find the associated GitHub PR. Check:
+- The ticket description for a PR link
+- Comments on the ticket
+- Or use `gh pr list` to find PRs mentioning the ticket ID
 
-If no PR is found, log "No PR found for ticket" and exit.
+**If no PR is found, say "No PR found for ticket [ID]" and exit.**
 
 ## Checkout the PR Branch
 
-Fetch and checkout the branch associated with the PR.
+Run these commands to checkout the PR branch:
+```bash
+git fetch origin
+gh pr checkout <PR_NUMBER>
+```
 
 ## Run PR Iteration
 
-Check the PR to see if there are any CI failures, review comments, or inline comments.
+**Now actively work on this PR.** Check for CI failures, review comments, or inline comments using:
+```bash
+gh pr checks <PR_NUMBER>
+gh pr view <PR_NUMBER> --comments
+```
 
 For each error or piece of feedback, first assess the scope:
 
@@ -104,4 +112,11 @@ Next, check the PR to see if there are any inline comments that are not part of 
 
 ## Done
 
+After completing work on this PR:
+- All addressable feedback should be fixed and pushed
+- All conversations should be resolved (either fixed or deferred with follow-up ticket)
+- Any follow-up tickets should be created in Linear
+
 Exit after processing this one PR. The next iteration will pick up the next ticket.
+
+**Remember**: The goal is to make progress on the PR, not just report its status.
