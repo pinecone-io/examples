@@ -31,8 +31,8 @@ jobs:
       - name: Detect changed notebooks
         id: set-matrix
         run: |
-          # Get list of changed .ipynb files
-          CHANGED_NOTEBOOKS=$(git diff --diff-filter=d --name-only origin/${{ inputs.base_ref }}...HEAD | grep '\.ipynb$' || true)
+          # Get list of changed .ipynb files, excluding experimental notebooks that require pre-existing data
+          CHANGED_NOTEBOOKS=$(git diff --diff-filter=d --name-only origin/${{ inputs.base_ref }}...HEAD | grep '\.ipynb$' | grep -v 'learn/experimental/' || true)
           if [ -z "$CHANGED_NOTEBOOKS" ]; then
             echo "No notebook changes detected"
             echo "has_changes=false" >> $GITHUB_OUTPUT
