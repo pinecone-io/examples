@@ -2,10 +2,11 @@
 
 # Check links in a notebook
 
-import re
-import os
-import sys
 import json
+import os
+import re
+import sys
+
 import nbformat
 import requests
 
@@ -20,11 +21,13 @@ known_good = [
 ]
 
 ignore_links = [
-    'platform.openai.com', # cloudflare blocks requests sometimes
-    'colab.research.google.com', # cloudflare blocks requests sometimes
-    'quora.com', # cloudflare blocks requests sometimes
-    'nbviewer.org', # nbviewer has a pretty strict rate limit, so we don't want to waste requests
-    'app.pinecone.io', # we don't need to spam our own homepage
+    "platform.openai.com",  # cloudflare blocks requests sometimes
+    "colab.research.google.com",  # cloudflare blocks requests sometimes
+    "quora.com",  # cloudflare blocks requests sometimes
+    "nbviewer.org",  # nbviewer has a pretty strict rate limit, so we don't want to waste requests
+    "app.pinecone.io",  # we don't need to spam our own homepage
+    "q4cdn.com",  # CDN returns 451 for HEAD requests but works with GET
+    "prod-1-data.ke.pinecone.io",  # internal API endpoint requiring auth
 ]
 
 known_good_links = set(known_good)
@@ -39,26 +42,26 @@ with open(nb_source_path, "r", encoding="utf-8") as f:
         good_links = set()
         failed_links = set()
         links = set()  # Use set to avoid duplicates
-        
+
         # URL regex pattern - updated to handle markdown links better
         url_pattern = r'https?://[^\s<>"\)]+|www\.[^\s<>"\)]+'
-        
+
         # Search through all cells
-        for cell in nb['cells']:
-            if 'source' in cell:
+        for cell in nb["cells"]:
+            if "source" in cell:
                 # Join multi-line source into single string
-                content = ''.join(cell['source'])
+                content = "".join(cell["source"])
                 # Find all URLs
                 found_links = re.findall(url_pattern, content)
                 links.update(found_links)
-        
+
         if links:
             print(f"\nFile: {filename}")
             for link in sorted(links):
                 if any(ignore_link in link for ignore_link in ignore_links):
                     print(f"  ⏭️ {link}")
                     continue
-                if "{" in link: # template strings don't need to be checked
+                if "{" in link:  # template strings don't need to be checked
                     print(f"  ⏭️ {link}")
                     continue
                 if link in known_good_links:
@@ -75,20 +78,20 @@ with open(nb_source_path, "r", encoding="utf-8") as f:
                         if response.status_code == 405:
                             # Not all links can be checked with HEAD, so we fall back to GET
                             response = requests.get(link, timeout=10)
-                        
+
                         if response.status_code == 200:
                             good_links.add(link)
                             print(f"  ✅ {link}")
                         else:
                             failed_links.add(link)
                             print(f"  ❌ {response.status_code} {link}")
-                    except Exception as e:
+                    except Exception:
                         failed_links.add(link)
                         print(f"  ❌ {link}")
 
         print(f"Found {len(links)} links")
         print(f"Good links: {len(good_links)}")
-        
+
         if len(failed_links) > 0:
             print("Failed links:")
             for link in sorted(failed_links):
