@@ -35,6 +35,11 @@ Review the ticket description:
 - Ensure the notebook has valid syntax
 - Format the notebook changed using uv to run ruff format on the notebook
 
+**When committing changes:**
+- Stage ONLY the files you created or modified (do NOT use `git add -A` or `git add .`)
+- Use `git add <specific-files>` for each file
+- Never stage `scripts/ticketbot.py` or `.cursor/commands/tb-*.md` - these are automation files
+
 ## Open a PR
 
 **Title:**

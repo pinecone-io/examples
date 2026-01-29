@@ -42,6 +42,12 @@ git fetch origin
 gh pr checkout <PR_NUMBER>
 ```
 
+**Important:** After checkout, restore ticketbot files to avoid including them in commits:
+```bash
+git checkout origin/master -- scripts/ticketbot.py .cursor/commands/tb-*.md .cursor/commands/process-*.md 2>/dev/null || true
+git reset HEAD scripts/ .cursor/commands/ 2>/dev/null || true
+```
+
 ## Run PR Iteration
 
 **Now actively work on this PR.** Check for CI failures, review comments, or inline comments using:
@@ -59,9 +65,15 @@ For each error or piece of feedback, first assess the scope:
 
 For these:
 - Plan and implement a fix for the problem
+- Stage ONLY the files you modified (do NOT use `git add -A` or `git add .`):
+  ```bash
+  git add <specific-files-you-changed>
+  ```
 - Make a commit that describes the change
 - Push the commit
 - Reply saying the feedback was addressed and mark the conversation as resolved
+
+**IMPORTANT:** Never stage `scripts/ticketbot.py` or `.cursor/commands/tb-*.md` files - these are automation files that should not be part of PR changes.
 
 **Large or out-of-scope changes (defer to follow-up):**
 - Significant refactoring beyond the PR's original purpose
