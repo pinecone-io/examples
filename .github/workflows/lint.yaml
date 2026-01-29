@@ -17,7 +17,9 @@ jobs:
       - name: Get changed files
         id: changed
         run: |
-          CHANGED=$(git diff --diff-filter=d --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(py|ipynb)$' || true)
+          BASE_REF="${{ github.base_ref }}"
+          BASE_REF="${BASE_REF:-master}"
+          CHANGED=$(git diff --diff-filter=d --name-only origin/${BASE_REF}...HEAD | grep -E '\.(py|ipynb)$' || true)
           echo "files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
