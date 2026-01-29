@@ -324,14 +324,19 @@ def run(job: str, interval: int, worker_index: int, total_workers: int):
         # Check drain flag before sleeping
         if _draining:
             break
-            
-        logger.info(f"[{worker_id}] Sleeping {interval}s...")
-        
-        # Sleep in small increments to respond to drain signal faster
-        for _ in range(interval):
-            if _draining:
-                break
-            time.sleep(1)
+
+        # Pick workers sleep between iterations to avoid creating too many tickets
+        # Iterate workers have a brief pause to avoid rate limits
+        if job == "tb-pick-work":
+            logger.info(f"[{worker_id}] Sleeping {interval}s...")
+            # Sleep in small increments to respond to drain signal faster
+            for _ in range(interval):
+                if _draining:
+                    break
+                time.sleep(1)
+        else:
+            # Brief pause to avoid rate limits
+            time.sleep(10)
     
     logger.info(f"[{worker_id}] Draining complete, exiting gracefully.")
 
