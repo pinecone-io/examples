@@ -42,10 +42,10 @@ Once you have a PR, proceed immediately to checkout and work on it.
 
 ## Checkout the PR Branch
 
-Run these commands to checkout the PR branch:
+Run these commands to checkout the PR branch in detached HEAD mode (allows multiple worktrees to work on the same PR):
 ```bash
 git fetch origin
-gh pr checkout <PR_NUMBER>
+gh pr checkout <PR_NUMBER> --detach
 ```
 
 **Important:** After checkout, restore ticketbot files to avoid including them in commits:
