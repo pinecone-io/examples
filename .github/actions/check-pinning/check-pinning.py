@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 import re
 import sys
 
@@ -94,21 +93,24 @@ def check_notebook(notebook_path: str) -> list[str]:
 
 
 def main():
+    notebooks = sys.argv[1:] if len(sys.argv) > 1 else []
+    
+    if not notebooks:
+        print("No notebooks to check.")
+        return
+
     has_error = False
     unpinned_by_notebook = {}
 
-    for root, _, files in os.walk(".", topdown=True):
-        if ".git" in root:
+    for notebook_path in notebooks:
+        if not notebook_path.endswith(".ipynb"):
             continue
-        for file in files:
-            if file.endswith(".ipynb"):
-                notebook_path = os.path.join(root, file)
-                unpinned = check_notebook(notebook_path)
-                if unpinned:
-                    unpinned_by_notebook[notebook_path] = unpinned
-                    has_error = True
-                else:
-                    print(f"OK: {notebook_path}")
+        unpinned = check_notebook(notebook_path)
+        if unpinned:
+            unpinned_by_notebook[notebook_path] = unpinned
+            has_error = True
+        else:
+            print(f"OK: {notebook_path}")
 
     if has_error:
         print()
