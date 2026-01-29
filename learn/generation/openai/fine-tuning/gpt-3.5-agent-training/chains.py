@@ -27,7 +27,7 @@ class VectorDBChain:
                 name=index_name,
                 dimension=EMBEDDING_DIM,
                 metric="cosine",
-                spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+                spec=ServerlessSpec(cloud="aws", region=environment),
             )
         self.index = pc.Index(index_name)
 
