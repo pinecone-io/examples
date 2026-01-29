@@ -198,6 +198,22 @@ def merge_ready(worker_index: int) -> None:
         raise
 
 
+def cleanup_orphaned() -> None:
+    """Find orphaned In Progress tickets and move them back to Backlog."""
+    worker_id = "tb-cleanup-orphaned"
+    logger.info(f"[{worker_id}] Starting cleanup of orphaned tickets")
+
+    worktree = get_worktree("tb-cleanup", 0)
+    prompt = "Run /tb-cleanup-orphaned"
+
+    try:
+        invoke_cursor(prompt, worktree, worker_id)
+        logger.info(f"[{worker_id}] Completed cleanup")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"[{worker_id}] Cursor failed: {e.stderr}")
+        raise
+
+
 def spawn_worker(
     job: str,
     interval: int,
@@ -365,6 +381,12 @@ def tb_iterate_prs_cmd(worker_index: int, total_workers: int):
 def tb_merge_ready_cmd(worker_index: int):
     """Run merge-ready once (for testing)."""
     merge_ready(worker_index)
+
+
+@cli.command("tb-cleanup-orphaned")
+def tb_cleanup_orphaned_cmd():
+    """Find orphaned In Progress tickets and move them back to Backlog."""
+    cleanup_orphaned()
 
 
 if __name__ == "__main__":
