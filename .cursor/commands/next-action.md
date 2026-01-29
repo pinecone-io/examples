@@ -14,7 +14,8 @@ Mark the ticket as started in Linear.
 Review the ticket description:
 - If it contains a detailed implementation plan, validate the plan and proceed 
   with implementation if sensible.
-- If no plan exists, draft one and get my approval before continuing.
+- If no plan exists, draft a reasonable implementation plan based on the ticket 
+  description and proceed with implementation.
 
 ## Implement 
 
