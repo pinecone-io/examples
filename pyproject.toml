@@ -21,5 +21,17 @@ python-dotenv = "^1.0.1"
 tiktoken = "^0.9.0"
 openai = "^1.68.0"
 pychalk = "^2.0.1"
-black = {extras = ["jupyter"], version = "^25.1.0"}
+pre-commit = "^4.0"
+ruff = "^0.9"
+
+[tool.ruff]
+extend-include = ["*.ipynb"]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+docstring-code-format = true
 
