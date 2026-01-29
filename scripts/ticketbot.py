@@ -32,7 +32,10 @@ def _handle_drain_signal(signum, frame):
     """Handle SIGTERM by setting drain flag."""
     global _draining
     _draining = True
-    logger.info("Received shutdown signal, will exit after current iteration completes...")
+    logger.info(
+        "Received shutdown signal, will exit after current iteration completes..."
+    )
+
 
 WORKSPACE = Path(os.environ.get("TICKETBOT_WORKSPACE", os.getcwd()))
 WORKTREE_DIR = WORKSPACE.parent / f"{WORKSPACE.name}-worktrees"
@@ -61,88 +64,94 @@ MAX_RETRIES = 3
 INITIAL_BACKOFF = 10  # seconds
 
 
-def invoke_cursor(prompt: str, worktree: Path, worker_id: str) -> subprocess.CompletedProcess:
+def invoke_cursor(
+    prompt: str, worktree: Path, worker_id: str
+) -> subprocess.CompletedProcess:
     """Invoke Cursor CLI with the given prompt in the specified worktree.
-    
+
     Retries with exponential backoff on transient failures.
     """
     logger.info(f"[{worker_id}] Invoking Cursor in {worktree}")
-    
+
     # Ensure log directory exists
     LOG_DIR.mkdir(exist_ok=True)
-    
+
     last_error = None
-    
+
     for attempt in range(MAX_RETRIES):
         # Create timestamped log file for this run
         timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
         log_file = LOG_DIR / f"{worker_id}-{timestamp}.log"
-        
+
         result = subprocess.run(
             [
                 "agent",
                 "--print",
                 "--force",
                 "--approve-mcps",
-                "--workspace", str(worktree),
+                "--workspace",
+                str(worktree),
                 prompt,
             ],
             capture_output=True,
             text=True,
         )
-        
+
         # Write output to log file
         with open(log_file, "w") as f:
-            f.write(f"=== Ticketbot Agent Log ===\n")
+            f.write("=== Ticketbot Agent Log ===\n")
             f.write(f"Worker: {worker_id}\n")
             f.write(f"Timestamp: {timestamp}\n")
             f.write(f"Attempt: {attempt + 1}/{MAX_RETRIES}\n")
             f.write(f"Worktree: {worktree}\n")
             f.write(f"Prompt: {prompt}\n")
             f.write(f"Exit Code: {result.returncode}\n")
-            f.write(f"\n=== STDOUT ===\n")
+            f.write("\n=== STDOUT ===\n")
             f.write(result.stdout or "(empty)")
-            f.write(f"\n\n=== STDERR ===\n")
+            f.write("\n\n=== STDERR ===\n")
             f.write(result.stderr or "(empty)")
-        
+
         logger.info(f"[{worker_id}] Agent output logged to: {log_file}")
-        
+
         # Success
         if result.returncode == 0:
             return result
-        
+
         # Check for transient errors that should be retried
         stderr_lower = (result.stderr or "").lower()
-        is_transient = any(err in stderr_lower for err in [
-            "connection stalled",
-            "connection reset",
-            "connection refused",
-            "timeout",
-            "rate limit",
-            "503",
-            "502",
-            "504",
-        ])
-        
+        is_transient = any(
+            err in stderr_lower
+            for err in [
+                "connection stalled",
+                "connection reset",
+                "connection refused",
+                "timeout",
+                "rate limit",
+                "503",
+                "502",
+                "504",
+            ]
+        )
+
         if not is_transient:
             # Non-transient error, don't retry
             raise subprocess.CalledProcessError(
                 result.returncode, result.args, result.stdout, result.stderr
             )
-        
+
         # Transient error, retry with backoff
         last_error = subprocess.CalledProcessError(
             result.returncode, result.args, result.stdout, result.stderr
         )
-        
+
         if attempt < MAX_RETRIES - 1:
-            backoff = INITIAL_BACKOFF * (2 ** attempt)
+            backoff = INITIAL_BACKOFF * (2**attempt)
             logger.warning(
                 f"[{worker_id}] Transient error (attempt {attempt + 1}/{MAX_RETRIES}), "
                 f"retrying in {backoff}s: {result.stderr[:100] if result.stderr else 'unknown error'}"
             )
             time.sleep(backoff)
-    
+
     # All retries exhausted
     logger.error(f"[{worker_id}] All {MAX_RETRIES} attempts failed")
     raise last_error
@@ -167,7 +176,9 @@ def pick_work(worker_index: int) -> None:
 def iterate_prs(worker_index: int, total_workers: int) -> None:
     """Iterate on PRs in review, filtered by shard."""
     worker_id = f"tb-iterate-prs-{worker_index}"
-    logger.info(f"[{worker_id}] Starting iterate_prs iteration (shard {worker_index}/{total_workers})")
+    logger.info(
+        f"[{worker_id}] Starting iterate_prs iteration (shard {worker_index}/{total_workers})"
+    )
 
     worktree = get_worktree("tb-iterate-prs", worker_index)
     prompt = f"""Run /tb-iterate-review-tickets
@@ -209,10 +220,14 @@ def spawn_worker(
         sys.executable,
         __file__,
         "run",
-        "--job", job,
-        "--interval", str(interval),
-        "--worker-index", str(worker_index),
-        "--total-workers", str(total_workers),
+        "--job",
+        job,
+        "--interval",
+        str(interval),
+        "--worker-index",
+        str(worker_index),
+        "--total-workers",
+        str(total_workers),
     ]
     logger.info(f"Spawning worker: {' '.join(cmd)}")
     return subprocess.Popen(cmd)
@@ -229,7 +244,9 @@ def cli():
 @click.option("--iterate-workers", default=3, help="Number of iterate-prs workers")
 @click.option("--merge-workers", default=1, help="Number of merge-ready workers")
 @click.option("--interval", default=45, help="Seconds between job iterations")
-@click.option("--stagger", default=30, help="Seconds between worker starts within a pool")
+@click.option(
+    "--stagger", default=30, help="Seconds between worker starts within a pool"
+)
 def start_all(
     pick_workers: int,
     iterate_workers: int,
@@ -273,29 +290,33 @@ def start_all(
             p.wait()
     except KeyboardInterrupt:
         logger.info("Draining workers (waiting for current iterations to complete)...")
-        
+
         # Send SIGTERM to all workers to trigger drain mode
         for p in processes:
             if p.poll() is None:  # Still running
                 p.send_signal(signal.SIGTERM)
-        
+
         # Wait for workers to finish gracefully (with timeout)
         drain_timeout = 600  # 10 minutes max wait
         start_time = time.time()
-        
+
         while any(p.poll() is None for p in processes):
             elapsed = time.time() - start_time
             if elapsed > drain_timeout:
-                logger.warning(f"Drain timeout ({drain_timeout}s) exceeded, force killing...")
+                logger.warning(
+                    f"Drain timeout ({drain_timeout}s) exceeded, force killing..."
+                )
                 for p in processes:
                     if p.poll() is None:
                         p.kill()
                 break
-            
+
             remaining = sum(1 for p in processes if p.poll() is None)
-            logger.info(f"Waiting for {remaining} workers to finish (elapsed: {int(elapsed)}s)...")
+            logger.info(
+                f"Waiting for {remaining} workers to finish (elapsed: {int(elapsed)}s)..."
+            )
             time.sleep(5)
-        
+
         logger.info("All workers stopped.")
 
 
@@ -308,14 +329,16 @@ def start_all(
 )
 @click.option("--interval", default=45, help="Seconds between iterations")
 @click.option("--worker-index", default=0, help="This worker's index (for sharding)")
-@click.option("--total-workers", default=1, help="Total workers of this job type (for sharding)")
+@click.option(
+    "--total-workers", default=1, help="Total workers of this job type (for sharding)"
+)
 def run(job: str, interval: int, worker_index: int, total_workers: int):
     """Run a single job type in a loop."""
     global _draining
-    
+
     # Register signal handler for graceful shutdown
     signal.signal(signal.SIGTERM, _handle_drain_signal)
-    
+
     worker_id = f"{job}-{worker_index}"
     logger.info(f"[{worker_id}] Starting worker loop (interval={interval}s)")
 
@@ -333,15 +356,15 @@ def run(job: str, interval: int, worker_index: int, total_workers: int):
         # Check drain flag before sleeping
         if _draining:
             break
-            
+
         logger.info(f"[{worker_id}] Sleeping {interval}s...")
-        
+
         # Sleep in small increments to respond to drain signal faster
         for _ in range(interval):
             if _draining:
                 break
             time.sleep(1)
-    
+
     logger.info(f"[{worker_id}] Draining complete, exiting gracefully.")
 
 
@@ -353,7 +376,9 @@ def tb_pick_work_cmd(worker_index: int):
 
 
 @cli.command("tb-iterate-prs")
-@click.option("--worker-index", default=0, help="Worker index for sharding and worktree")
+@click.option(
+    "--worker-index", default=0, help="Worker index for sharding and worktree"
+)
 @click.option("--total-workers", default=1, help="Total workers for sharding")
 def tb_iterate_prs_cmd(worker_index: int, total_workers: int):
     """Run iterate-prs once (for testing)."""
