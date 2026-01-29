@@ -1,0 +1,21 @@
+name: Check dependency pinning
+description: Ensures pip install commands have version pins for reproducibility
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
+    - name: Install dependencies
+      shell: bash
+      run: uv pip install nbformat --system
+
+    - name: Check dependency pinning
+      shell: bash
+      run: python ${{ github.action_path }}/check-pinning.py

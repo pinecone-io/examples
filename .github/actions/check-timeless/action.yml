@@ -1,0 +1,21 @@
+name: Check for timeless content
+description: Detects dated or time-sensitive language that will become stale
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
+    - name: Install dependencies
+      shell: bash
+      run: uv pip install nbformat --system
+
+    - name: Check for timeless content
+      shell: bash
+      run: python ${{ github.action_path }}/check-timeless.py
