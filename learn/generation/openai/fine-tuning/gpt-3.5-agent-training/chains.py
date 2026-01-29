@@ -1,6 +1,7 @@
-from pinecone import Pinecone, ServerlessSpec
-import openai
 from uuid import uuid4
+
+import openai
+from pinecone import Pinecone, ServerlessSpec
 from tqdm.auto import tqdm
 
 # text-embedding-ada-002 dimension
@@ -26,7 +27,7 @@ class VectorDBChain:
                 name=index_name,
                 dimension=EMBEDDING_DIM,
                 metric="cosine",
-                spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+                spec=ServerlessSpec(cloud="aws", region=environment),
             )
         self.index = pc.Index(index_name)
 
