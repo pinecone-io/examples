@@ -25,3 +25,4 @@ question_answering/tmp
 
 # secrets
 .env
+examples.egg-info/

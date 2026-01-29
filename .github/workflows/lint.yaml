@@ -48,3 +48,57 @@ jobs:
       - name: Run ruff format check
         if: steps.changed.outputs.has_changes == 'true'
         run: echo "${{ steps.changed.outputs.files }}" | xargs -d '\n' ruff format --check
+
+  check-notebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch base branch
+        run: |
+          BASE_REF="${{ github.base_ref }}"
+          BASE_REF="${BASE_REF:-master}"
+          git fetch origin ${BASE_REF}
+
+      - name: Get changed notebooks
+        id: changed
+        run: |
+          BASE_REF="${{ github.base_ref }}"
+          BASE_REF="${BASE_REF:-master}"
+          CHANGED=$(git diff --diff-filter=d --name-only origin/${BASE_REF}...HEAD | grep -E '\.ipynb$' || true)
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          echo "has_changes=$([[ -n "$CHANGED" ]] && echo true || echo false)" >> $GITHUB_OUTPUT
+
+      - name: Set up Python
+        if: steps.changed.outputs.has_changes == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        if: steps.changed.outputs.has_changes == 'true'
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        if: steps.changed.outputs.has_changes == 'true'
+        run: uv pip install nbformat --system
+
+      - name: Check for secrets
+        if: steps.changed.outputs.has_changes == 'true'
+        run: echo "${{ steps.changed.outputs.files }}" | xargs -d '\n' python .github/actions/check-secrets/check-secrets.py
+
+      - name: Check notebook structure
+        if: steps.changed.outputs.has_changes == 'true'
+        run: echo "${{ steps.changed.outputs.files }}" | xargs -d '\n' python .github/actions/check-structure/check-structure.py
+
+      - name: Check for timeless content
+        if: steps.changed.outputs.has_changes == 'true'
+        run: echo "${{ steps.changed.outputs.files }}" | xargs -d '\n' python .github/actions/check-timeless/check-timeless.py
+
+      - name: Check dependency pinning
+        if: steps.changed.outputs.has_changes == 'true'
+        run: echo "${{ steps.changed.outputs.files }}" | xargs -d '\n' python .github/actions/check-pinning/check-pinning.py

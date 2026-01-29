@@ -13,14 +13,17 @@ If the plan was made to address a GitHub issue, include a link to the original G
 Every Linear issue created should include these additional instructions at the end of the description.
 
 ```
+This ticket needs to be implemented in the https://github.com/pinecone-io/examples repository.
+
+Pull master to ensure you have the latest changes before beginning any implementation work.
+
 When the improvement is complete, the agent should:
 
 1. **Quality Review**
    - Verify the notebook executes successfully from top to bottom
    - Ensure code follows Python best practices and is well-commented
    - Check that all markdown cells render correctly
-   - Validate any links are not broken
-   - Ensure content avoids stale language (no specific dates or version references)
+   - Score this notebook according to the criteria in .github/NOTEBOOK_REVIEW_TEMPLATE.md and implement fixes for any issues uncovered.
 
 2. **Create Pull Request**
    - Create a PR with a title that follows Conventional Commits format

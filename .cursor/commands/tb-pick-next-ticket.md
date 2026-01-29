@@ -1,13 +1,24 @@
-# next-action
+# tb-pick-next-ticket
+
+Pick up one ticket from the backlog and implement it.
+
+## Check Capacity
+
+Query Linear for tickets in project "Notebook Examples" with label "docs:examples" 
+that have status "In Progress".
+
+If the count is 6 or more, log "At capacity - skipping" and exit immediately.
+
+## Checkout Master
 
 Checkout the master branch and pull to get the latest changes.
 
-## Choose a ticket
+## Choose a Ticket
 
 Find the next Linear ticket in project "Notebook Examples" with label "docs:examples" 
 that has status "Backlog", prioritized by priority then creation date.
 
-Mark the ticket as started in Linear.
+Mark the ticket as started in Linear (set status to "In Progress").
 
 ## Review and Plan
 
@@ -23,6 +34,11 @@ Review the ticket description:
 - Iterate by assessing the code against the criteria in .github/NOTEBOOK_REVIEW_TEMPLATE.md
 - Ensure the notebook has valid syntax
 - Format the notebook changed using uv to run ruff format on the notebook
+
+**When committing changes:**
+- Stage ONLY the files you created or modified (do NOT use `git add -A` or `git add .`)
+- Use `git add <specific-files>` for each file
+- Never stage `scripts/ticketbot.py` or `.cursor/commands/tb-*.md` - these are automation files
 
 ## Open a PR
 
@@ -41,28 +57,10 @@ Review the ticket description:
 **Metadata:**
 - Apply a GitHub label to the PR (helpful for categorizing changes)
 
-Update the Linear ticket with a link to the GitHub PR.
+Update the Linear ticket:
+- Add a link to the GitHub PR
+- Set status to "In Review"
 
-## Review feedback and iterate
+## Done
 
-Check the PR to see if there are any CI failures, review comments, or inline comments.
-
-For each error or piece of feedback:
-- Verify the problem exists. If the problem does not exist, reply on github with relevant context.
-- Plan and implement a fix for the problem
-- Make a commit that describes the change
-- Push the commit
-- If the feedback is an inline comment, reply saying the feedback was addressed. Then mark the conversation as resolved.
-- If the feedback was from an overall review comment, reply saying the feedback was addressed.
-
-Next, check the PR to see if there are any inline comments that are not part of a formal review. Follow the same procedure for confirming, fixing, and pushing changes. Mark the conversation as resolved when the fix has been pushed.
-
-## Merge
-
-Verify all of these conditions:
-- The PR has an appropriate GitHub label
-- The PR has a completed Bugbot review with all feedback comments addressed
-- All CI checks are passing (if not, run `/pr-iterate`)
-- There is no unresolved review feedback (if there is, run `/pr-iterate`)
-
-If all conditions are met, merge the PR.
+Exit after opening the PR. Review iteration is handled by a separate worker.
