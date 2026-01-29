@@ -1,3 +1,30 @@
+[project]
+name = "examples"
+version = "0.1.0"
+description = "Example notebooks and documentation for Pinecone"
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+
+[project.optional-dependencies]
+dev = [
+    "nbformat>=5.10.4",
+    "langchain>=0.3.21",
+    "pinecone>=6.0.2",
+    "python-dotenv>=1.0.1",
+    "tiktoken>=0.9.0",
+    "openai>=1.68.0",
+    "pychalk>=2.0.1",
+    "pre-commit>=4.0",
+    "ruff>=0.9",
+    "click>=8.3",
+]
+
+[tool.uv]
+package = false
+
+[tool.setuptools]
+packages = []
+
 [tool.poetry]
 name = "examples"
 authors = [
@@ -11,7 +38,7 @@ description = "Add your description here"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<3.14"
+python = ">=3.10,<3.14"
 
 [tool.poetry.group.dev.dependencies]
 nbformat = "^5.10.4"
