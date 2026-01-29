@@ -1,6 +1,7 @@
-from pinecone import Pinecone, ServerlessSpec
-import openai
 from uuid import uuid4
+
+import openai
+from pinecone import Pinecone, ServerlessSpec
 from tqdm.auto import tqdm
 
 # text-embedding-ada-002 dimension
