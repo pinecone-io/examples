@@ -228,7 +228,7 @@ def cli():
 @click.option("--pick-workers", default=3, help="Number of pick-work workers")
 @click.option("--iterate-workers", default=3, help="Number of iterate-prs workers")
 @click.option("--merge-workers", default=1, help="Number of merge-ready workers")
-@click.option("--interval", default=120, help="Seconds between job iterations")
+@click.option("--interval", default=45, help="Seconds between job iterations")
 @click.option("--stagger", default=30, help="Seconds between worker starts within a pool")
 def start_all(
     pick_workers: int,
@@ -306,7 +306,7 @@ def start_all(
     required=True,
     help="Job type to run",
 )
-@click.option("--interval", default=120, help="Seconds between iterations")
+@click.option("--interval", default=45, help="Seconds between iterations")
 @click.option("--worker-index", default=0, help="This worker's index (for sharding)")
 @click.option("--total-workers", default=1, help="Total workers of this job type (for sharding)")
 def run(job: str, interval: int, worker_index: int, total_workers: int):
