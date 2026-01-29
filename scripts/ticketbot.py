@@ -8,6 +8,7 @@ to handle different stages: picking new work, iterating on PRs, and merging.
 
 import logging
 import os
+import signal
 import subprocess
 import sys
 import time
@@ -22,6 +23,16 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
+
+# Global flag for graceful shutdown
+_draining = False
+
+
+def _handle_drain_signal(signum, frame):
+    """Handle SIGTERM by setting drain flag."""
+    global _draining
+    _draining = True
+    logger.info("Received shutdown signal, will exit after current iteration completes...")
 
 WORKSPACE = Path(os.environ.get("TICKETBOT_WORKSPACE", os.getcwd()))
 WORKTREE_DIR = WORKSPACE.parent / f"{WORKSPACE.name}-worktrees"
@@ -254,18 +265,37 @@ def start_all(
             time.sleep(stagger)
         processes.append(spawn_worker("tb-merge-ready", interval, worker_index=i))
 
-    logger.info(f"Started {len(processes)} workers. Press Ctrl+C to stop.")
+    logger.info(f"Started {len(processes)} workers. Press Ctrl+C to drain and stop.")
 
     try:
         # Wait for all processes (they run forever, so this blocks until interrupt)
         for p in processes:
             p.wait()
     except KeyboardInterrupt:
-        logger.info("Shutting down workers...")
+        logger.info("Draining workers (waiting for current iterations to complete)...")
+        
+        # Send SIGTERM to all workers to trigger drain mode
         for p in processes:
-            p.terminate()
-        for p in processes:
-            p.wait()
+            if p.poll() is None:  # Still running
+                p.send_signal(signal.SIGTERM)
+        
+        # Wait for workers to finish gracefully (with timeout)
+        drain_timeout = 600  # 10 minutes max wait
+        start_time = time.time()
+        
+        while any(p.poll() is None for p in processes):
+            elapsed = time.time() - start_time
+            if elapsed > drain_timeout:
+                logger.warning(f"Drain timeout ({drain_timeout}s) exceeded, force killing...")
+                for p in processes:
+                    if p.poll() is None:
+                        p.kill()
+                break
+            
+            remaining = sum(1 for p in processes if p.poll() is None)
+            logger.info(f"Waiting for {remaining} workers to finish (elapsed: {int(elapsed)}s)...")
+            time.sleep(5)
+        
         logger.info("All workers stopped.")
 
 
@@ -281,10 +311,15 @@ def start_all(
 @click.option("--total-workers", default=1, help="Total workers of this job type (for sharding)")
 def run(job: str, interval: int, worker_index: int, total_workers: int):
     """Run a single job type in a loop."""
+    global _draining
+    
+    # Register signal handler for graceful shutdown
+    signal.signal(signal.SIGTERM, _handle_drain_signal)
+    
     worker_id = f"{job}-{worker_index}"
     logger.info(f"[{worker_id}] Starting worker loop (interval={interval}s)")
 
-    while True:
+    while not _draining:
         try:
             if job == "tb-pick-work":
                 pick_work(worker_index)
@@ -295,8 +330,19 @@ def run(job: str, interval: int, worker_index: int, total_workers: int):
         except Exception as e:
             logger.error(f"[{worker_id}] Error: {e}")
 
+        # Check drain flag before sleeping
+        if _draining:
+            break
+            
         logger.info(f"[{worker_id}] Sleeping {interval}s...")
-        time.sleep(interval)
+        
+        # Sleep in small increments to respond to drain signal faster
+        for _ in range(interval):
+            if _draining:
+                break
+            time.sleep(1)
+    
+    logger.info(f"[{worker_id}] Draining complete, exiting gracefully.")
 
 
 @cli.command("tb-pick-work")
