@@ -2,7 +2,11 @@
 
 Find one ticket in review that matches this worker's shard, then actively work on its PR.
 
-**IMPORTANT**: Do not just list PRs or tickets. Pick ONE and actively work on it.
+**CRITICAL RULES**:
+- Do NOT just list PRs or tickets - pick ONE and work on it immediately
+- Do NOT ask which PR to work on - pick the first matching one yourself
+- Do NOT wait for confirmation - this is an autonomous workflow
+- Take action, make commits, push changes
 
 ## Parse Shard Info
 
@@ -23,7 +27,7 @@ For example, if the ticket ID is "EXA-123" and this is worker 1 of 3:
 - Check: 123 % 3 = 0, which does not equal 1
 - Skip this ticket
 
-**Pick the first matching ticket.** If no matching tickets are found, say "No tickets for this shard" and exit.
+**Pick the first matching ticket and proceed immediately.** Do not list options or ask which one to work on. If no matching tickets are found, say "No tickets for this shard" and exit.
 
 ## Find the Associated PR
 
@@ -33,6 +37,8 @@ From the selected ticket, find the associated GitHub PR. Check:
 - Or use `gh pr list` to find PRs mentioning the ticket ID
 
 **If no PR is found, say "No PR found for ticket [ID]" and exit.**
+
+Once you have a PR, proceed immediately to checkout and work on it.
 
 ## Checkout the PR Branch
 
