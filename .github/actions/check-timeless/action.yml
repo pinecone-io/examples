@@ -1,0 +1,22 @@
+name: Check for timeless content
+description: Detects dated or time-sensitive language that will become stale
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install poetry
+      shell: bash
+      run: pipx install poetry
+
+    - name: Install dependencies
+      shell: bash
+      run: poetry install --only dev
+
+    - name: Check for timeless content
+      shell: bash
+      run: poetry run python ${{ github.action_path }}/check-timeless.py

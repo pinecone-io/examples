@@ -48,3 +48,27 @@ jobs:
       - name: Run ruff format check
         if: steps.changed.outputs.has_changes == 'true'
         run: echo "${{ steps.changed.outputs.files }}" | xargs -d '\n' ruff format --check
+
+  check-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/check-secrets
+
+  check-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/check-structure
+
+  check-timeless:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/check-timeless
+
+  check-pinning:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/check-pinning

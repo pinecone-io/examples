@@ -1,0 +1,22 @@
+name: Check dependency pinning
+description: Ensures pip install commands have version pins for reproducibility
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install poetry
+      shell: bash
+      run: pipx install poetry
+
+    - name: Install dependencies
+      shell: bash
+      run: poetry install --only dev
+
+    - name: Check dependency pinning
+      shell: bash
+      run: poetry run python ${{ github.action_path }}/check-pinning.py
