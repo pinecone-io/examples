@@ -24,10 +24,6 @@ def check_notebook(notebook_path: str) -> list[str]:
         if not code_cells:
             return issues
 
-        # Check imports are grouped in first code cell
-        first_code_cell = code_cells[0]
-        first_code_source = first_code_cell.source
-
         # Look for import statements in non-first code cells
         for i, cell in enumerate(code_cells[1:], start=2):
             source = cell.source.strip()

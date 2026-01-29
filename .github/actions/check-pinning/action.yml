@@ -14,8 +14,8 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      run: uv sync --only-group dev
+      run: uv pip install nbformat --system
 
     - name: Check dependency pinning
       shell: bash
-      run: uv run python ${{ github.action_path }}/check-pinning.py
+      run: python ${{ github.action_path }}/check-pinning.py
