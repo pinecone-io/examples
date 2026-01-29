@@ -182,22 +182,6 @@ Only process tickets where (ticket_number % {total_workers}) == {worker_index}""
         raise
 
 
-def merge_ready(worker_index: int) -> None:
-    """Merge PRs that are ready."""
-    worker_id = f"tb-merge-ready-{worker_index}"
-    logger.info(f"[{worker_id}] Starting merge_ready iteration")
-
-    worktree = get_worktree("tb-merge-ready", worker_index)
-    prompt = "Run /tb-merge-ready-prs"
-
-    try:
-        invoke_cursor(prompt, worktree, worker_id)
-        logger.info(f"[{worker_id}] Completed merge_ready iteration")
-    except subprocess.CalledProcessError as e:
-        logger.error(f"[{worker_id}] Cursor failed: {e.stderr}")
-        raise
-
-
 def cleanup_orphaned() -> None:
     """Find orphaned In Progress tickets and move them back to Backlog."""
     worker_id = "tb-cleanup-orphaned"
@@ -243,13 +227,11 @@ def cli():
 @cli.command()
 @click.option("--pick-workers", default=3, help="Number of pick-work workers")
 @click.option("--iterate-workers", default=3, help="Number of iterate-prs workers")
-@click.option("--merge-workers", default=1, help="Number of merge-ready workers")
 @click.option("--interval", default=45, help="Seconds between job iterations")
 @click.option("--stagger", default=30, help="Seconds between worker starts within a pool")
 def start_all(
     pick_workers: int,
     iterate_workers: int,
-    merge_workers: int,
     interval: int,
     stagger: int,
 ):
@@ -263,6 +245,7 @@ def start_all(
         processes.append(spawn_worker("tb-pick-work", interval, worker_index=i))
 
     # Spawn iterate workers (sharded by index)
+    # These also handle merging when PR is ready
     for i in range(iterate_workers):
         if i > 0:
             time.sleep(stagger)
@@ -274,12 +257,6 @@ def start_all(
                 total_workers=iterate_workers,
             )
         )
-
-    # Spawn merge workers
-    for i in range(merge_workers):
-        if i > 0:
-            time.sleep(stagger)
-        processes.append(spawn_worker("tb-merge-ready", interval, worker_index=i))
 
     logger.info(f"Started {len(processes)} workers. Press Ctrl+C to drain and stop.")
 
@@ -318,7 +295,7 @@ def start_all(
 @cli.command()
 @click.option(
     "--job",
-    type=click.Choice(["tb-pick-work", "tb-iterate-prs", "tb-merge-ready"]),
+    type=click.Choice(["tb-pick-work", "tb-iterate-prs"]),
     required=True,
     help="Job type to run",
 )
@@ -341,8 +318,6 @@ def run(job: str, interval: int, worker_index: int, total_workers: int):
                 pick_work(worker_index)
             elif job == "tb-iterate-prs":
                 iterate_prs(worker_index, total_workers)
-            elif job == "tb-merge-ready":
-                merge_ready(worker_index)
         except Exception as e:
             logger.error(f"[{worker_id}] Error: {e}")
 
@@ -374,13 +349,6 @@ def tb_pick_work_cmd(worker_index: int):
 def tb_iterate_prs_cmd(worker_index: int, total_workers: int):
     """Run iterate-prs once (for testing)."""
     iterate_prs(worker_index, total_workers)
-
-
-@cli.command("tb-merge-ready")
-@click.option("--worker-index", default=0, help="Worker index for worktree")
-def tb_merge_ready_cmd(worker_index: int):
-    """Run merge-ready once (for testing)."""
-    merge_ready(worker_index)
 
 
 @cli.command("tb-cleanup-orphaned")

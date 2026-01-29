@@ -110,13 +110,48 @@ When the fix is complete, the agent should:
 
 Next, check the PR to see if there are any inline comments that are not part of a formal review. Follow the same procedure for confirming, fixing, and pushing changes. Mark the conversation as resolved when the fix has been pushed.
 
-## Done
+## Check if Ready to Merge
+
+After addressing all feedback, check if this PR is now ready to merge:
+
+```bash
+gh pr checks <PR_NUMBER>
+gh pr view <PR_NUMBER> --json reviews,state,mergeable
+```
+
+**Merge conditions:**
+1. All CI checks are passing
+2. No unresolved review feedback (comments with follow-up tickets count as resolved)
+3. Has an appropriate GitHub label
+4. PR is in a mergeable state
+
+**If all conditions are met:**
+
+1. Merge the PR:
+   ```bash
+   gh pr merge <PR_NUMBER> --squash --delete-branch
+   ```
+
+2. Update the Linear ticket status to "Done"
+
+3. Say "Merged PR #[NUMBER] and marked ticket [ID] as Done"
+
+**If NOT ready to merge:**
+
+Say "PR #[NUMBER] is not ready to merge yet" and list what's blocking:
+- Failing CI checks
+- Unresolved feedback
+- Missing labels
+- etc.
+
+The next iteration will pick it up again.
+
+## Summary
 
 After completing work on this PR:
 - All addressable feedback should be fixed and pushed
 - All conversations should be resolved (either fixed or deferred with follow-up ticket)
 - Any follow-up tickets should be created in Linear
-
-Exit after processing this one PR. The next iteration will pick up the next ticket.
+- If ready, the PR should be merged and ticket marked Done
 
 **Remember**: The goal is to make progress on the PR, not just report its status.
