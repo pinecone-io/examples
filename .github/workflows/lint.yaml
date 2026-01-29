@@ -14,6 +14,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fetch base branch
+        run: |
+          BASE_REF="${{ github.base_ref }}"
+          BASE_REF="${BASE_REF:-master}"
+          git fetch origin ${BASE_REF}
+
       - name: Get changed files
         id: changed
         run: |
