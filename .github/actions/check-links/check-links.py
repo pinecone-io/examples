@@ -73,7 +73,7 @@ with open(nb_source_path, "r", encoding="utf-8") as f:
                             # Not all links can be checked with HEAD, so we fall back to GET
                             response = requests.get(link, timeout=10)
                         
-                        if response.status_code == 200:
+                        if 200 <= response.status_code < 400:
                             good_links.add(link)
                             print(f"  ✅ {link}")
                         else:
