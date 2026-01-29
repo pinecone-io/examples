@@ -74,7 +74,7 @@ def check_notebook(notebook_path: str) -> list[str]:
 
 def main():
     notebooks = sys.argv[1:] if len(sys.argv) > 1 else []
-    
+
     if not notebooks:
         print("No notebooks to check.")
         return

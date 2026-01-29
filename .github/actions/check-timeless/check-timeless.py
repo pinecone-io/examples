@@ -42,14 +42,14 @@ def check_notebook(notebook_path: str) -> list[str]:
                     findings.append(f'  Cell {cell_idx}: {issue_type} - "{context}"')
 
     except Exception as e:
-        print(f"Error reading {notebook_path}: {e}", file=sys.stderr)
+        findings.append(f"Error reading notebook: {e}")
 
     return findings
 
 
 def main():
     notebooks = sys.argv[1:] if len(sys.argv) > 1 else []
-    
+
     if not notebooks:
         print("No notebooks to check.")
         return

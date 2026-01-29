@@ -4,31 +4,16 @@ import sys
 
 import nbformat
 
-# Flags that should be ignored when checking for unpinned packages
-IGNORED_FLAGS = {
-    "-q",
-    "-qq",
-    "-qqq",
-    "--quiet",
-    "-U",
-    "--upgrade",
-    "-e",
-    "--editable",
-    "-r",
-    "--requirement",
-    "--no-cache-dir",
-    "--user",
-    "--pre",
-    "--force-reinstall",
-    "--no-deps",
-}
-
 
 def extract_packages(install_line: str) -> list[str]:
     packages = []
 
     # Remove the pip install prefix
     line = re.sub(r"^[!%]pip\s+install\s+", "", install_line.strip())
+
+    # Strip inline comments
+    if "#" in line:
+        line = line[: line.index("#")]
 
     # Split by whitespace
     parts = line.split()
@@ -42,7 +27,14 @@ def extract_packages(install_line: str) -> list[str]:
         # Skip flags
         if part.startswith("-"):
             # Some flags take an argument
-            if part in {"-r", "--requirement", "-e", "--editable", "-c", "--constraint"}:
+            if part in {
+                "-r",
+                "--requirement",
+                "-e",
+                "--editable",
+                "-c",
+                "--constraint",
+            }:
                 skip_next = True
             continue
 
@@ -87,14 +79,14 @@ def check_notebook(notebook_path: str) -> list[str]:
                             unpinned.append(f"  Cell {cell_idx}: {pkg}")
 
     except Exception as e:
-        print(f"Error reading {notebook_path}: {e}", file=sys.stderr)
+        unpinned.append(f"Error reading notebook: {e}")
 
     return unpinned
 
 
 def main():
     notebooks = sys.argv[1:] if len(sys.argv) > 1 else []
-    
+
     if not notebooks:
         print("No notebooks to check.")
         return
