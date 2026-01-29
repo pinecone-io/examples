@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import nbformat
 import os
 import re
 import sys
+
+import nbformat
 
 DATED_PATTERNS = [
     (

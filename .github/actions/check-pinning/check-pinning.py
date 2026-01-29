@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import nbformat
 import os
 import re
 import sys
+
+import nbformat
 
 # Flags that should be ignored when checking for unpinned packages
 IGNORED_FLAGS = {

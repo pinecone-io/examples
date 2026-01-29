@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import nbformat
 import os
 import re
 import sys
+
+import nbformat
 
 
 def check_notebook(notebook_path: str) -> list[str]:

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import nbformat
 import os
 import re
 import sys
+
+import nbformat
 
 SECRET_PATTERNS = [
     (r"sk-[a-zA-Z0-9]{20,}", "OpenAI API key"),
