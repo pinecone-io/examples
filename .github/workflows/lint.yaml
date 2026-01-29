@@ -15,7 +15,9 @@ jobs:
         id: changed
         run: |
           CHANGED=$(git diff --diff-filter=d --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(py|ipynb)$' || true)
-          echo "files=$CHANGED" >> $GITHUB_OUTPUT
+          echo "files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
           echo "has_changes=$([[ -n "$CHANGED" ]] && echo true || echo false)" >> $GITHUB_OUTPUT
 
       - name: Set up Python
