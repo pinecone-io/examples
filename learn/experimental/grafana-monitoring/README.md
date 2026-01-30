@@ -23,7 +23,7 @@ scrape_configs:
 
 Grafana is configured by default to run against the local Prometheus instance. A sample dashboard
 for monitoring all indexes in a Project is preloaded into Grafana. You can add this dashboard to your own
-Grafana instance by copying `./grafana/dashbords/pinecone.json`.
+Grafana instance by copying `./grafana/dashboards/pinecone.json`.
 
 ## Run
 
