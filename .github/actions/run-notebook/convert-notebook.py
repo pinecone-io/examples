@@ -3,11 +3,11 @@
 # Convert a notebook to a Python script
 
 import os
-import sys
-import nbformat
 import shutil
+import sys
 from tempfile import mkdtemp
-from tempfile import TemporaryDirectory
+
+import nbformat
 
 # Get the notebook filename from the command line
 filename = "../../../" + sys.argv[1]
