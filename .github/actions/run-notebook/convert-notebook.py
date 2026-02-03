@@ -92,12 +92,12 @@ PIP_COMMANDS = [
 
 for cell in nb.cells:
     if cell.cell_type == "code":
-        # ensures the cell is not a pip command, avoid hitting words that contain "pip"
-        if not any(cmd in cell.source for cmd in PIP_COMMANDS):
-            #  Remove any lines that start with "!" or "%"
-            #  These are "magic" commands such as "%matplotlib inline" that 
-            #  are not executable outside of a notebook environment.
-            executable = "\n".join([line for line in cell.source.split("\n") if not line.strip().startswith("!") and not line.strip().startswith("%")])
+        #  Remove any lines that start with "!" or "%"
+        #  These are "magic" commands such as "%matplotlib inline" that 
+        #  are not executable outside of a notebook environment.
+        executable = "\n".join([line for line in cell.source.split("\n") if not line.strip().startswith("!") and not line.strip().startswith("%")])
+        # Only add if there's actual code left after removing magic commands
+        if executable.strip():
             executable_cells.append(executable)
 
 # Save executable cells to a notebook.py file
