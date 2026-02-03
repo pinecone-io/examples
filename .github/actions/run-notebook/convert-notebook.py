@@ -15,11 +15,11 @@ print(f"Processing notebook: {filename}")
 nb_source_path = os.path.join(os.path.dirname(__file__), filename)
 
 temp_dir = mkdtemp()
-venv_path = os.path.join(temp_dir, 'venv')
+venv_path = os.path.join(temp_dir, "venv")
 os.makedirs(venv_path, exist_ok=True)
 
 # Copy file into temp directory
-temp_nb_path = os.path.join(temp_dir, 'notebook.ipynb')
+temp_nb_path = os.path.join(temp_dir, "notebook.ipynb")
 print(f"Copying notebook to {temp_nb_path}")
 shutil.copy(nb_source_path, temp_nb_path)
 
@@ -47,9 +47,14 @@ run_commands = [activate_venv]
 for cell in nb.cells:
     if cell.cell_type == "code":
         if "!pip" in cell.source or "%pip" in cell.source:
-            # Replace all instances of "!pip" and "%pip" with "pip"
-            command = cell.source.replace("!pip", "pip").replace("%pip", "pip")
-            run_commands.append(command)
+            # Extract only pip command lines, not imports or other code
+            pip_lines = [
+                line.replace("!pip", "pip").replace("%pip", "pip")
+                for line in cell.source.split("\n")
+                if line.strip().startswith("!pip") or line.strip().startswith("%pip")
+            ]
+            if pip_lines:
+                run_commands.append("\n".join(pip_lines))
 
 run_commands.append("""
 # Run the notebook executable code
@@ -62,8 +67,8 @@ deactivate
 """)
 
 # Save pip install commands to a run.sh script
-run_script_path = os.path.join(temp_dir, 'run.sh')
-with open(run_script_path, 'w', encoding="utf-8") as f:
+run_script_path = os.path.join(temp_dir, "run.sh")
+with open(run_script_path, "w", encoding="utf-8") as f:
     f.write("\n".join(run_commands))
 
 print(f"Setup script saved to {run_script_path}")
@@ -86,30 +91,35 @@ PIP_COMMANDS = [
     "pip wheel",
     "pip hash",
     "pip cache",
-    "pip index"
+    "pip index",
 ]
 
 
 for cell in nb.cells:
     if cell.cell_type == "code":
         #  Remove any lines that start with "!" or "%"
-        #  These are "magic" commands such as "%matplotlib inline" that 
+        #  These are "magic" commands such as "%matplotlib inline" that
         #  are not executable outside of a notebook environment.
-        executable = "\n".join([line for line in cell.source.split("\n") if not line.strip().startswith("!") and not line.strip().startswith("%")])
+        executable = "\n".join(
+            [
+                line
+                for line in cell.source.split("\n")
+                if not line.strip().startswith("!") and not line.strip().startswith("%")
+            ]
+        )
         # Only add if there's actual code left after removing magic commands
         if executable.strip():
             executable_cells.append(executable)
 
 # Save executable cells to a notebook.py file
-script_path = os.path.join(temp_dir, 'notebook.py')
-with open(script_path, 'w', encoding="utf-8") as f:
+script_path = os.path.join(temp_dir, "notebook.py")
+with open(script_path, "w", encoding="utf-8") as f:
     for cell in executable_cells:
-        f.write(cell + '\n')
+        f.write(cell + "\n")
 
 print(f"Script saved to {script_path}")
 
 # Output script and notebook path to github actions output
-with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+with open(os.environ["GITHUB_OUTPUT"], "a") as f:
     f.write(f"script_path={run_script_path}\n")
     f.write(f"notebook_path={script_path}\n")
-    
