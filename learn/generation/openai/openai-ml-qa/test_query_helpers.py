@@ -396,3 +396,138 @@ class TestQueryAndAnswer:
         answer, contexts = result
         assert answer == "Final answer"
         assert contexts == ['C1', 'C2']
+
+    def test_handles_empty_pinecone_results(self):
+        """Test that function handles empty Pinecone results gracefully."""
+        # Arrange
+        mock_index = MagicMock()
+        mock_openai = MagicMock()
+
+        mock_openai.Embedding.create.return_value = {
+            'data': [{'embedding': [0.1]}]
+        }
+        # Pinecone returns no matches
+        mock_index.query.return_value = {'matches': []}
+
+        # Act
+        answer, contexts = query_and_answer("Q?", mock_index, mock_openai)
+
+        # Assert
+        assert answer == "I'm sorry, I don't have enough information to answer that query."
+        assert contexts == []
+        # Should not call OpenAI completion when there are no contexts
+        mock_openai.Completion.create.assert_not_called()
+
+
+class TestEdgeCases:
+    """Tests for edge cases and error handling."""
+
+    def test_build_prompt_with_very_long_contexts(self):
+        """Test handling of contexts that exceed character limit."""
+        # Arrange
+        query = "Test query?"
+        # Create a context that's longer than the limit
+        very_long_context = "x" * 5000
+        contexts = [very_long_context, "Short context 2", "Short context 3"]
+        limit = 3750
+
+        # Act
+        result = build_prompt(query, contexts, limit=limit)
+
+        # Assert
+        # Should include the first context even though it exceeds the limit
+        assert very_long_context in result
+        # Should not include the second context
+        assert "Short context 2" not in result
+        assert "Question: Test query?" in result
+
+    def test_build_prompt_with_multiple_contexts_exceeding_limit(self):
+        """Test that contexts are truncated when combined length exceeds limit."""
+        # Arrange
+        query = "Test?"
+        # Create contexts that together exceed the limit
+        contexts = ["a" * 2000, "b" * 2000, "c" * 2000]
+        limit = 3750
+
+        # Act
+        result = build_prompt(query, contexts, limit=limit)
+
+        # Assert
+        # Should include first context
+        assert "a" * 2000 in result
+        # Should not include third context (would exceed limit)
+        assert "c" * 2000 not in result
+
+    def test_extract_contexts_handles_missing_metadata(self):
+        """Test extraction handles matches without proper metadata structure."""
+        # Arrange - matches without context in metadata
+        query_results = {
+            'matches': [
+                {'id': '1', 'metadata': {}},  # Missing 'context' key
+            ]
+        }
+
+        # Act & Assert
+        # This should raise a KeyError, which is expected behavior
+        # In production, we'd want proper error handling
+        with pytest.raises(KeyError):
+            extract_contexts(query_results)
+
+    def test_query_and_answer_with_single_context_exceeding_limit(self):
+        """Test query_and_answer when single context exceeds character limit."""
+        # Arrange
+        mock_index = MagicMock()
+        mock_openai = MagicMock()
+
+        mock_openai.Embedding.create.return_value = {
+            'data': [{'embedding': [0.1]}]
+        }
+        # Return a very long context
+        long_context = "x" * 5000
+        mock_index.query.return_value = {
+            'matches': [
+                {'id': '1', 'metadata': {'context': long_context}}
+            ]
+        }
+        mock_openai.Completion.create.return_value = {
+            'choices': [{'text': 'Answer based on long context'}]
+        }
+
+        # Act
+        answer, contexts = query_and_answer("Q?", mock_index, mock_openai)
+
+        # Assert
+        assert answer == "Answer based on long context"
+        assert contexts == [long_context]
+        # Should still call OpenAI even with very long context
+        mock_openai.Completion.create.assert_called_once()
+
+    def test_build_prompt_with_special_characters_in_query(self):
+        """Test prompt building with special characters in query."""
+        # Arrange
+        query = 'What is "Machine Learning" & AI?'
+        contexts = ["ML is a field of AI."]
+
+        # Act
+        result = build_prompt(query, contexts)
+
+        # Assert
+        assert 'What is "Machine Learning" & AI?' in result
+        assert "ML is a field of AI." in result
+
+    def test_generate_answer_strips_whitespace(self):
+        """Test that answer generation strips leading/trailing whitespace."""
+        # Arrange
+        mock_openai = MagicMock()
+        mock_openai.Completion.create.return_value = {
+            'choices': [{'text': '\n\n  Answer with lots of whitespace  \n\n'}]
+        }
+        prompt = "Test prompt"
+
+        # Act
+        result = generate_answer(prompt, mock_openai)
+
+        # Assert
+        assert result == "Answer with lots of whitespace"
+        assert not result.startswith('\n')
+        assert not result.endswith('\n')

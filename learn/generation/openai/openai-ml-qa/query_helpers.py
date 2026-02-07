@@ -85,7 +85,12 @@ def build_prompt(
 
     prompt_end = f"\n\nQuestion: {query}\nAnswer:"
 
+    # Handle empty contexts
+    if not contexts:
+        return prompt_start + prompt_end
+
     # Append contexts until hitting limit
+    prompt = None
     for i in range(1, len(contexts) + 1):
         joined_contexts = "\n\n---\n\n".join(contexts[:i])
         if len(joined_contexts) >= limit:
@@ -103,9 +108,7 @@ def build_prompt(
         elif i == len(contexts):
             # We've included all contexts without exceeding limit
             prompt = prompt_start + joined_contexts + prompt_end
-    else:
-        # Fallback if contexts is empty
-        prompt = prompt_start + prompt_end
+            break
 
     return prompt
 
@@ -180,6 +183,10 @@ def query_and_answer(
 
     # Extract contexts
     contexts = extract_contexts(query_results)
+
+    # Handle case where Pinecone returns no results
+    if not contexts:
+        return "I'm sorry, I don't have enough information to answer that query.", []
 
     # Build prompt
     prompt = build_prompt(query, contexts, prompt_type=prompt_type)
