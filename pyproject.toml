@@ -17,6 +17,7 @@ dev = [
     "pre-commit>=4.0",
     "ruff>=0.9",
     "click>=8.3",
+    "pytest>=8.0.0",
 ]
 
 [tool.uv]
@@ -51,6 +52,7 @@ pychalk = "^2.0.1"
 pre-commit = "^4.0"
 ruff = "^0.9"
 click = "^8.3"
+pytest = "^8.0.0"
 
 [tool.ruff]
 extend-include = ["*.ipynb"]
