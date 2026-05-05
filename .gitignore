@@ -30,3 +30,5 @@ examples.egg-info/
 # worktrees
 .worktrees/
 .env
+
+bird-search-example-main
