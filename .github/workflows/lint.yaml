@@ -17,14 +17,14 @@ jobs:
       - name: Fetch base branch
         run: |
           BASE_REF="${{ github.base_ref }}"
-          BASE_REF="${BASE_REF:-master}"
+          BASE_REF="${BASE_REF:-main}"
           git fetch origin ${BASE_REF}
 
       - name: Get changed files
         id: changed
         run: |
           BASE_REF="${{ github.base_ref }}"
-          BASE_REF="${BASE_REF:-master}"
+          BASE_REF="${BASE_REF:-main}"
           CHANGED=$(git diff --diff-filter=d --name-only origin/${BASE_REF}...HEAD | grep -E '\.(py|ipynb)$' || true)
           echo "files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED" >> $GITHUB_OUTPUT
@@ -59,14 +59,14 @@ jobs:
       - name: Fetch base branch
         run: |
           BASE_REF="${{ github.base_ref }}"
-          BASE_REF="${BASE_REF:-master}"
+          BASE_REF="${BASE_REF:-main}"
           git fetch origin ${BASE_REF}
 
       - name: Get changed notebooks
         id: changed
         run: |
           BASE_REF="${{ github.base_ref }}"
-          BASE_REF="${BASE_REF:-master}"
+          BASE_REF="${BASE_REF:-main}"
           CHANGED=$(git diff --diff-filter=d --name-only origin/${BASE_REF}...HEAD | grep -E '\.ipynb$' || true)
           echo "files<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGED" >> $GITHUB_OUTPUT

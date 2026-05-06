@@ -6,7 +6,7 @@ on:
       base_ref:
         required: false
         type: string
-        default: 'master'
+        default: 'main'
 
 jobs:
   validate-notebooks:
