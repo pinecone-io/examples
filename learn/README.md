@@ -60,7 +60,7 @@ Paste the full URL (including the `.ipynb` extension) into the URL bar in the mo
 
 ![Import Notebook to Google Colab](./images/import-pinecone-notebook-in-google-collab.png)
 
-Next, click the the name of the Notebook you want to run in the list that appears in the middle of the modal.
+Next, click the name of the Notebook you want to run in the list that appears in the middle of the modal.
 
 If this is your first time using Google Colab, you are likely to run into one or both of the two following issues: 
 
