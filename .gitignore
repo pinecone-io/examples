@@ -32,3 +32,15 @@ examples.egg-info/
 .env
 
 bird-search-example-main
+
+# === Harness protection (schema v1) ===
+# These entries prevent agentic harness state files from being
+# accidentally committed to this repository. Do not remove.
+pipeline-state/
+tasks/
+*.rings.toml
+.rings.lock.*
+scratch/
+bootstrap-state/
+playbooks/
+reviewers/
