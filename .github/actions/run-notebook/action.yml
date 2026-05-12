@@ -1,5 +1,5 @@
 name: "Run Notebook"
-description: "Run a notebook"
+description: "Run a notebook end-to-end against a real Jupyter kernel via nbclient"
 
 inputs:
   notebook:
@@ -26,32 +26,16 @@ runs:
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
+    - name: Install runner dependencies
       shell: bash
       run: |
         pip install --upgrade pip
-        pip install nbformat
+        pip install nbformat nbclient ipykernel
 
-    - id: convert
-      shell: bash
-      name: Convert notebook into tmpdir script
-      run: |
-        python .github/actions/run-notebook/convert-notebook.py ${{ inputs.notebook }}
-    
-    - name: View the run script
+    - name: Run the notebook
       shell: bash
       run: |
-        cat ${{ steps.convert.outputs.script_path }}
-
-    - name: View converted notebook content
-      shell: bash
-      run: |
-        cat ${{ steps.convert.outputs.notebook_path }}
-
-    - name: Run the converted notebook
-      shell: bash
-      run: |
-        bash ${{ steps.convert.outputs.script_path }}
+        python .github/actions/run-notebook/run-notebook.py "${{ inputs.notebook }}"
       env:
         PINECONE_API_KEY: ${{ inputs.PINECONE_API_KEY }}
         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
