@@ -25,7 +25,7 @@ import sys
 
 import nbformat
 from nbclient import NotebookClient
-from nbclient.exceptions import CellExecutionError
+from nbclient.exceptions import CellExecutionError, CellTimeoutError, DeadKernelError
 
 CELL_TIMEOUT = int(os.environ.get("NOTEBOOK_CELL_TIMEOUT", "600"))
 
@@ -48,6 +48,18 @@ def main() -> int:
 
     try:
         client.execute()
+    except CellTimeoutError as exc:
+        print(
+            f"\nCell exceeded timeout of {CELL_TIMEOUT}s "
+            f"(override via NOTEBOOK_CELL_TIMEOUT):\n{exc}",
+            file=sys.stderr,
+        )
+        return 1
+    except DeadKernelError as exc:
+        print(
+            f"\nKernel died during execution (OOM/segfault?):\n{exc}", file=sys.stderr
+        )
+        return 1
     except CellExecutionError as exc:
         print(f"\nCell execution failed:\n{exc}", file=sys.stderr)
         return 1
