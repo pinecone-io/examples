@@ -1,1 +1,0 @@
-Here are notebooks and data for the Cohere x Pinecone webinar in May 2022. Find the [demo here](https://share.streamlit.io/pinecone-io/playground/not_slack_chatbot/src/server.py) and for a recording of the workshop [see here]().
