@@ -17,6 +17,7 @@ dev = [
     "pre-commit>=4.0",
     "ruff>=0.9",
     "click>=8.3",
+    "marimo>=0.23.6",
 ]
 
 [tool.uv]
