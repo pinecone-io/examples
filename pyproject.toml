@@ -25,33 +25,6 @@ package = false
 [tool.setuptools]
 packages = []
 
-[tool.poetry]
-name = "examples"
-authors = [
-    "Jen Hamon",
-    "Jesse Seldess",
-    "Arjun Patel",
-    "James Briggs"
-]
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-
-[tool.poetry.dependencies]
-python = ">=3.10,<3.14"
-
-[tool.poetry.group.dev.dependencies]
-nbformat = "^5.10.4"
-langchain = "^0.3.21"
-pinecone = "^6.0.2"
-python-dotenv = "^1.0.1"
-tiktoken = "^0.9.0"
-openai = "^1.68.0"
-pychalk = "^2.0.1"
-pre-commit = "^4.0"
-ruff = "^0.9"
-click = "^8.3"
-
 [tool.ruff]
 extend-include = ["*.ipynb"]
 line-length = 88
