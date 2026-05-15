@@ -1,5 +1,10 @@
 .DS_Store
-.__pycache__
+
+# Python build/runtime artifacts
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
 
 # Data files
 **/*.parquet
@@ -25,11 +30,9 @@ question_answering/tmp
 
 # secrets
 .env
-examples.egg-info/
 
 # worktrees
 .worktrees/
-.env
 
 bird-search-example-main
 
