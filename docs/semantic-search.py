@@ -351,11 +351,6 @@ def _(search):
     return
 
 
-@app.cell
-def _():
-    return
-
-
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
@@ -432,7 +427,40 @@ def _(search):
 
 @app.cell
 def _(search):
-    search("I am meeting a friend at the park", lang="en")
+    search("Quiero reunirme con un amigo en el parque", lang="es")
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Try It Yourself
+
+    Enter a query and select a language filter. Results update when you finish typing.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    query_input = mo.ui.text(
+        placeholder="Enter a search query...",
+        value="The park is crowded today",
+        full_width=True,
+    )
+
+    lang_select = mo.ui.radio(
+        options={"All languages": None, "English only": "en", "Spanish only": "es"},
+        value="All languages",
+    )
+
+    mo.vstack([query_input, lang_select])
+    return lang_select, query_input
+
+
+@app.cell(hide_code=True)
+def _(lang_select, query_input, search):
+    search(query_input.value, lang=lang_select.value)
     return
 
 
