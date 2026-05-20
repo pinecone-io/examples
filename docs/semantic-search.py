@@ -140,7 +140,6 @@ def _(load_dataset):
 @app.cell
 def _(tatoeba):
     tatoeba[0:3]
-
     return
 
 
@@ -297,13 +296,17 @@ def _(mo):
     return
 
 
-@app.cell(hide_code=True)
-def _(index, namespace):
+@app.cell
+def _(index, mo, namespace):
     def print_results(query, results):
-        print(f"Query: '{query}'")
-        for hit in results.result.hits:
-            print(f"  {hit.fields['chunk_text']} (score: {hit.score:.4f})")
-        print()
+        data = [
+            {"sentence": hit.fields["chunk_text"], "score": round(hit.score, 4)}
+            for hit in results.result.hits
+        ]
+        return mo.vstack([
+            mo.md(f"**Query:** {query}"),
+            mo.ui.table(data, show_column_summaries=False),
+        ])
 
 
     def search(query, top_k=10):
@@ -312,7 +315,7 @@ def _(index, namespace):
             top_k=top_k,
             inputs={"text": query},
         )
-        print_results(query, results)
+        return print_results(query, results)
 
     return (search,)
 
@@ -323,7 +326,7 @@ def _(search):
     return
 
 
-@app.cell(hide_code=True)
+@app.cell
 def _(search):
     search("I need a place to park")
     return
@@ -370,7 +373,7 @@ def _(mo):
     return (delete_button,)
 
 
-@app.cell(hide_code=True)
+@app.cell
 def _(delete_button, index_name, mo, pc):
     mo.stop(not delete_button.value)
     pc.indexes.delete(index_name)
