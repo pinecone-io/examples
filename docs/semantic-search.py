@@ -3,9 +3,7 @@
 # dependencies = [
 #     "datasets",
 #     "marimo>=0.23.6",
-#     "numpy",
 #     "pinecone==9.0.1",
-#     "tqdm",
 # ]
 # ///
 

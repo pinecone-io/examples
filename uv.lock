@@ -410,10 +410,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "datasets" },
-    { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pinecone" },
-    { name = "tqdm" },
 ]
 
 [package.optional-dependencies]
@@ -438,7 +435,6 @@ requires-dist = [
     { name = "langchain", marker = "extra == 'dev'", specifier = ">=0.3.21" },
     { name = "marimo", marker = "extra == 'dev'", specifier = ">=0.23.6" },
     { name = "nbformat", marker = "extra == 'dev'", specifier = ">=5.10.4" },
-    { name = "numpy", specifier = ">=2.2.6" },
     { name = "openai", marker = "extra == 'dev'", specifier = ">=1.68.0" },
     { name = "pinecone", specifier = "==9.0.1" },
     { name = "pinecone", marker = "extra == 'dev'", specifier = ">=6.0.2" },
@@ -447,7 +443,6 @@ requires-dist = [
     { name = "python-dotenv", marker = "extra == 'dev'", specifier = ">=1.0.1" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.9" },
     { name = "tiktoken", marker = "extra == 'dev'", specifier = ">=0.9.0" },
-    { name = "tqdm", specifier = ">=4.67.1" },
 ]
 provides-extras = ["dev"]
 
