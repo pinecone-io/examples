@@ -159,13 +159,11 @@ def _():
                 return True
         return False
 
-
     def filter_pairs(dataset, keywords):
         """Filter translation pairs where the English sentence contains any keyword."""
         return dataset.filter(
             lambda x: simple_keyword_filter(x["translation"]["en"], keywords)
         ).flatten()
-
 
     def extract_sentences(pairs, lang):
         """Extract and deduplicate sentences for one language from filtered pairs."""
@@ -174,6 +172,7 @@ def _():
         dataset = dataset.rename_column(f"translation.{lang}", "sentence")
 
         seen = set()
+
         def is_unique(example):
             if example["sentence"] in seen:
                 return False
@@ -204,12 +203,14 @@ def _(extract_sentences, filter_pairs, mo, tatoeba):
     english = extract_sentences(filtered_pairs, lang="en")
     spanish = extract_sentences(filtered_pairs, lang="es")
 
-    mo.vstack([
-        mo.md(f"**English** — {len(english)} sentences"),
-        mo.ui.table(english, page_size=5),
-        mo.md(f"**Spanish** — {len(spanish)} sentences"),
-        mo.ui.table(spanish, page_size=5),
-    ])
+    mo.vstack(
+        [
+            mo.md(f"**English** — {len(english)} sentences"),
+            mo.ui.table(english, page_size=5),
+            mo.md(f"**Spanish** — {len(spanish)} sentences"),
+            mo.ui.table(spanish, page_size=5),
+        ]
+    )
     return english, spanish
 
 
@@ -243,9 +244,8 @@ def to_records(sentences, column, id_prefix=""):
 
 @app.cell
 def _(english, mo, spanish):
-    records = (
-        to_records(english, column="sentence", id_prefix="en-") +
-        to_records(spanish, column="sentence", id_prefix="es-")
+    records = to_records(english, column="sentence", id_prefix="en-") + to_records(
+        spanish, column="sentence", id_prefix="es-"
     )
 
     mo.ui.table(records, page_size=10)
@@ -319,11 +319,12 @@ def _(index, mo, namespace):
             }
             for hit in results.result.hits
         ]
-        return mo.vstack([
-            mo.md(f"**Query:** {query}"),
-            mo.ui.table(data, show_column_summaries=False),
-        ])
-
+        return mo.vstack(
+            [
+                mo.md(f"**Query:** {query}"),
+                mo.ui.table(data, show_column_summaries=False),
+            ]
+        )
 
     def search(query, top_k=10, lang=None):
         results = index.search(
