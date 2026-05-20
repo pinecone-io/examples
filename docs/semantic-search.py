@@ -85,33 +85,33 @@ def _(mo):
     Pinecone handles embedding automatically when you upsert and query records — no separate
     embedding step required.
 
-    We'll use the [llama-text-embed-v2](https://docs.pinecone.io/models/llama-text-embed-v2) model
-    and map it to the `chunk_text` field in our records. To embed multilingual content instead,
-    swap in the [multilingual-e5-large](https://docs.pinecone.io/models/multilingual-e5-large) model.
+    We'll use the [multilingual-e5-large](https://docs.pinecone.io/models/multilingual-e5-large)
+    model, which encodes text from many languages into the same vector space. This means a query
+    in English can return results in Spanish (and vice versa) without any translation step.
     """)
     return
 
 
 @app.cell
-def _(mo, pc):
+def _(pc):
     index_name = "semantic-search"
 
-    if not pc.indexes.exists(name=index_name):
-        pc.create_index_for_model(
-            name=index_name,
-            cloud="aws",
-            region="us-east-1",
-            embed={
-                "model": "llama-text-embed-v2",
-                "field_map": {"text": "chunk_text"},
-            },
-        )
+    if pc.indexes.exists(name=index_name):
+        pc.indexes.delete(name=index_name)
 
-    index_desc = pc.describe_index(name=index_name)
+    pc.create_index_for_model(
+        name=index_name,
+        cloud="aws",
+        region="us-east-1",
+        embed={
+            "model": "multilingual-e5-large",
+            "field_map": {"text": "chunk_text"},
+        },
+    )
 
-    index = pc.index(host=index_desc.host)
+    index = pc.index(index_name)
 
-    mo.inspect(index.describe_index_stats())
+    index.describe_index_stats()
     return index, index_name
 
 
@@ -146,8 +146,9 @@ def _(tatoeba):
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    Before embedding the full dataset, we can use a keyword filter to pre-select a focused
-    subset of sentences. This keeps the demo small and fast.
+    Before embedding, we filter the dataset to a focused subset. We filter on the English side
+    of each translation pair, then extract sentences for both languages separately — so the
+    Spanish sentences are the actual translations of the matched English sentences.
     """)
     return
 
@@ -161,21 +162,19 @@ def _():
         return False
 
 
-    def prepare_sentences(dataset, keywords=None):
-        if keywords:
-            dataset = dataset.filter(
-                lambda x: simple_keyword_filter(
-                    sentence=x["translation"]["en"], keywords=keywords
-                )
-            )
+    def filter_pairs(dataset, keywords):
+        """Filter translation pairs where the English sentence contains any keyword."""
+        return dataset.filter(
+            lambda x: simple_keyword_filter(x["translation"]["en"], keywords)
+        ).flatten()
 
-        dataset = dataset.flatten()
-        dataset = dataset.remove_columns("translation.es")
-        dataset = dataset.rename_column("translation.en", "sentence")
 
-        # The dataset has some english sentences multiple times
-        # with different spanish translations, but we're not interested
-        # in that for this demo so we remove the dupes.
+    def extract_sentences(pairs, lang):
+        """Extract and deduplicate sentences for one language from filtered pairs."""
+        other = "es" if lang == "en" else "en"
+        dataset = pairs.remove_columns(f"translation.{other}")
+        dataset = dataset.rename_column(f"translation.{lang}", "sentence")
+
         seen = set()
         def is_unique(example):
             if example["sentence"] in seen:
@@ -184,32 +183,36 @@ def _():
             return True
 
         dataset = dataset.filter(is_unique)
+        return dataset.add_column("lang", [lang] * len(dataset))
 
-        return dataset.add_column("lang", ["en"] * len(dataset))
-
-    return (prepare_sentences,)
+    return extract_sentences, filter_pairs
 
 
 @app.cell(hide_code=True)
 def _(mo):
     mo.md(r"""
-    The filtered dataset contains mostly what we expect, but also some sentences where "park"
-    appears as a substring but not at a word boundary — for example, "A glass of sparkling water, please."
-
-    This isn't a problem. The embedding model encodes meaning, so these sentences will land in
-    a different region of the vector space and won't surface as relevant results for queries
-    about parks or parking.
+    The English sentences contain mostly what we expect, but also some where "park" appears as a
+    substring — for example, "A glass of sparkling water, please." This isn't a problem: the
+    embedding model encodes meaning, so these sentences will land in a different region of the
+    vector space and won't surface as relevant results.
     """)
     return
 
 
 @app.cell
-def _(mo, prepare_sentences, tatoeba):
+def _(extract_sentences, filter_pairs, mo, tatoeba):
     keywords = ["park"]
-    sentences = prepare_sentences(tatoeba, keywords=keywords)
+    filtered_pairs = filter_pairs(tatoeba, keywords=keywords)
+    english = extract_sentences(filtered_pairs, lang="en")
+    spanish = extract_sentences(filtered_pairs, lang="es")
 
-    mo.ui.table(sentences, page_size=10)
-    return (sentences,)
+    mo.vstack([
+        mo.md(f"**English** — {len(english)} sentences"),
+        mo.ui.table(english, page_size=5),
+        mo.md(f"**Spanish** — {len(spanish)} sentences"),
+        mo.ui.table(spanish, page_size=5),
+    ])
+    return english, spanish
 
 
 @app.cell(hide_code=True)
@@ -221,26 +224,33 @@ def _(mo):
 
     The `chunk_text` field name comes from the `field_map` we set when creating the index.
     Pinecone uses that mapping to know which field to embed automatically on upsert.
+
+    We prefix IDs with the language code (`en-`, `es-`) to avoid collisions when combining
+    records from multiple languages.
     """)
     return
 
 
 @app.function
-def to_records(sentences, column):
+def to_records(sentences, column, id_prefix=""):
     return [
         {
-            "id": sentence["id"],
+            "id": f"{id_prefix}{idx}",
             "chunk_text": sentence[column],
             "lang": sentence["lang"],
         }
-    for sentence in sentences ]
+        for idx, sentence in enumerate(sentences)
+    ]
 
 
 @app.cell
-def _(mo, sentences):
-    records = to_records(sentences, column="sentence")
+def _(english, mo, spanish):
+    records = (
+        to_records(english, column="sentence", id_prefix="en-") +
+        to_records(spanish, column="sentence", id_prefix="es-")
+    )
 
-    mo.ui.table(records)
+    mo.ui.table(records, page_size=10)
     return (records,)
 
 
@@ -267,7 +277,7 @@ def _(mo):
 @app.cell
 def _(index, mo, records):
     batch_size = 96
-    namespace = "english-sentences"
+    namespace = "sentences"
 
     # Batching avoids hitting the embedding model's rate limit
     for start in mo.status.progress_bar(
@@ -291,7 +301,11 @@ def _(mo):
     Pinecone embeds it using the same model. The query vector is compared against all stored vectors
     and the closest matches are returned.
 
-    We'll run two queries using different meanings of "park" and observe how the results differ.
+    Because both English and Spanish sentences share the same vector space, an English query can
+    surface Spanish results — and vice versa. The `lang` column in the results shows where each
+    match came from.
+
+    We'll run the same query in English and Spanish to show they retrieve semantically similar results.
     """)
     return
 
@@ -300,7 +314,11 @@ def _(mo):
 def _(index, mo, namespace):
     def print_results(query, results):
         data = [
-            {"sentence": hit.fields["chunk_text"], "score": round(hit.score, 4)}
+            {
+                "lang": hit.fields.get("lang", ""),
+                "sentence": hit.fields["chunk_text"],
+                "score": round(hit.score, 4),
+            }
             for hit in results.result.hits
         ]
         return mo.vstack([
@@ -309,11 +327,12 @@ def _(index, mo, namespace):
         ])
 
 
-    def search(query, top_k=10):
+    def search(query, top_k=10, lang=None):
         results = index.search(
             namespace=namespace,
             top_k=top_k,
             inputs={"text": query},
+            filter={"lang": {"$eq": lang}} if lang else None,
         )
         return print_results(query, results)
 
@@ -328,7 +347,30 @@ def _(search):
 
 @app.cell
 def _(search):
-    search("I need a place to park")
+    search("Quiero ir al parque a relajarme")
+    return
+
+
+@app.cell
+def _():
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Meaning Over Keywords
+
+    The next query contains no form of the word "park" — yet it will still retrieve sentences
+    about parking a car. This is the key distinction between semantic search and keyword search:
+    results are **ranked by meaning**, not by word overlap.
+    """)
+    return
+
+
+@app.cell
+def _(search):
+    search("where can I leave my car downtown")
     return
 
 
@@ -338,7 +380,7 @@ def _(mo):
     ## How It Works
 
     When you call `index.search` with a text string, Pinecone first embeds it using the same model
-    configured at index creation — in this case, `llama-text-embed-v2`. This produces a query vector
+    configured at index creation — in this case, `multilingual-e5-large`. This produces a query vector
     in the same embedding space as the stored sentence vectors.
 
     Pinecone then compares the query vector against all stored vectors using cosine similarity: the
@@ -346,13 +388,51 @@ def _(mo):
     direction (identical meaning); a score near 0 means they are unrelated. The `top_k` results
     with the highest scores are returned.
 
-    Because the query string and the stored sentences are encoded by the same model, the proximity
-    in vector space reflects proximity in meaning — which is what makes semantic search work.
+    Because `multilingual-e5-large` encodes text from many languages into the same vector space,
+    a query in English can retrieve Spanish results — and vice versa — without any translation step.
+    Proximity in vector space reflects proximity in meaning, regardless of which language the text
+    is in.
+
+    **Model selection determines what the vector space looks like.** A model trained only on English
+    text would not place Spanish and English sentences near each other. A model trained on code would
+    cluster programs by functionality rather than natural language meaning. Choosing the right model
+    for your data and use case is the most consequential decision in a semantic search system —
+    Pinecone's [model catalog](https://docs.pinecone.io/models/overview) lists available options
+    with guidance on when to use each.
 
     At scale, comparing a query vector against every stored vector would be slow. Pinecone uses
     approximate nearest neighbor (ANN) algorithms to find the closest matches in sub-linear time,
     maintaining low latency even across billions of vectors.
     """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ## Filtering by Language
+
+    Querying in one language to find semantically similar results in another is a basic form of
+    translation — without any explicit translation step. But sometimes you want to search within
+    a single language instead.
+
+    The `lang` metadata field on each record lets you scope results using Pinecone's
+    [metadata filtering](https://docs.pinecone.io/guides/search/filter-by-metadata).
+    The embedding model still encodes the query the same way — the filter simply restricts which
+    records are eligible to be returned.
+    """)
+    return
+
+
+@app.cell
+def _(search):
+    search("I am meeting a friend at the park", lang="en")
+    return
+
+
+@app.cell
+def _(search):
+    search("I am meeting a friend at the park", lang="en")
     return
 
 
