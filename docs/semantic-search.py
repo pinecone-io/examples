@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.10"
 # dependencies = [
-#     "datasets",
+#     "datasets==3.5.1",
 #     "marimo>=0.23.6",
 #     "pinecone==9.0.1",
 # ]
