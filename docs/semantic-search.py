@@ -190,6 +190,7 @@ def _(load_dataset):
         "Helsinki-NLP/tatoeba",
         lang1="en",
         lang2="es",
+        trust_remote_code=True,
         split="train",
     )
     return (tatoeba,)
