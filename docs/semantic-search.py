@@ -53,17 +53,77 @@ def _(mo):
 
     ### Pinecone API Key
 
-    Set your `PINECONE_API_KEY` environment variable before running this notebook.
-    You can get a free key at [app.pinecone.io](https://app.pinecone.io).
+    You'll need a free Pinecone API key to run this notebook. Get one at
+    [app.pinecone.io](https://app.pinecone.io).
+
+    **Running locally?** Set `PINECONE_API_KEY` in your environment or in a `.env`
+    file — marimo reads `.env` files automatically on startup. The cell below will
+    detect the key and confirm it's loaded.
+
+    **Running in molab?** Enter your key directly in the input field below.
     """)
     return
 
 
-@app.cell
-def _(Pinecone, os):
-    # Initialize client
-    api_key = os.environ.get("PINECONE_API_KEY")
+@app.cell(hide_code=True)
+def _(mo, os):
+    env_key = os.environ.get("PINECONE_API_KEY", "")
 
+    api_key_input = mo.ui.text(
+        kind="password",
+        placeholder="pcsk_...",
+        label="Pinecone API Key",
+        value=env_key,
+        full_width=True,
+    )
+
+    (
+        mo.callout(mo.md("API key loaded from environment."), kind="success")
+        if env_key
+        else mo.vstack(
+            [
+                mo.callout(
+                    mo.md(
+                        "Enter your Pinecone API key. Get a free key at [app.pinecone.io](https://app.pinecone.io)."
+                    ),
+                    kind="info",
+                ),
+                api_key_input,
+            ]
+        )
+    )
+    return (api_key_input,)
+
+
+@app.cell(hide_code=True)
+def _(api_key_input, mo):
+    api_key = api_key_input.value
+    mo.stop(
+        not api_key,
+        mo.callout(
+            mo.md("**API key required.** Enter your key above to continue."),
+            kind="danger",
+        ),
+    )
+    return (api_key,)
+
+
+@app.cell(hide_code=True)
+def _(mo):
+    mo.md(r"""
+    ### Instantiating the Client
+
+    With the API key in hand, we can create a `Pinecone` client. This is the entry point for all
+    control-plane operations — creating and managing indexes, listing namespaces, and so on.
+
+    The `source_tag` parameter is used internally by Pinecone to attribute API usage from example
+    notebooks. You would not include this in your own applications.
+    """)
+    return
+
+
+@app.cell(hide_code=True)
+def _(Pinecone, api_key):
     pc = Pinecone(
         api_key=api_key,
         source_tag="pinecone_examples:docs:semantic_search",
