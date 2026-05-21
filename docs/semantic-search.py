@@ -107,7 +107,7 @@ def _(pc):
         },
     )
 
-    index = pc.index(index_name)
+    index = pc.index(name=index_name)
 
     index.describe_index_stats()
     return index, index_name
@@ -483,7 +483,7 @@ def _(mo):
 @app.cell
 def _(delete_button, index_name, mo, pc):
     mo.stop(not delete_button.value)
-    pc.indexes.delete(index_name)
+    pc.indexes.delete(name=index_name)
     return
 
 
