@@ -231,6 +231,131 @@ Results update when the user changes either input.
 
 ## Phase 6: Code Quality
 
+### Name things to document intent
+
+Well-named functions and variables replace comments. If you find yourself writing a comment to explain what a block of code does, that is a signal to extract it into a named function instead.
+
+**Before:**
+```python
+# Filter sentences containing our keyword and build records for Pinecone
+results = []
+for i, row in enumerate(dataset.filter(lambda x: any(k in x["text"] for k in keywords))):
+    results.append({"id": str(i), "chunk_text": row["text"], "lang": row["lang"]})
+```
+
+**After:**
+```python
+def filter_by_keywords(dataset, keywords):
+    return dataset.filter(lambda x: any(k in x["text"] for k in keywords))
+
+def to_records(sentences, id_prefix=""):
+    return [
+        {"id": f"{id_prefix}{i}", "chunk_text": s["text"], "lang": s["lang"]}
+        for i, s in enumerate(sentences)
+    ]
+
+filtered = filter_by_keywords(dataset, keywords)
+records = to_records(filtered)
+```
+
+The second version reads like a description of what is happening. The function names are the documentation.
+
+### Decompose monolithic functions by stage
+
+Jupyter notebooks often have one large function that loads, filters, transforms, and formats data all at once. Split it along its natural stages — each stage becomes a function with a clear name and a clear input/output contract.
+
+**Identify stages by asking:** at what points does the data change shape or purpose?
+
+Example decomposition:
+```
+prepare_sentences(dataset, keywords)  →  one big function doing everything
+
+becomes:
+
+filter_pairs(dataset, keywords)       →  returns filtered HF dataset (pairs)
+extract_sentences(pairs, lang)        →  returns single-language HF dataset
+to_records(sentences, column)         →  returns list of Pinecone record dicts
+```
+
+Each stage can be shown, inspected, and explained independently. Each can be reused or replaced without touching the others.
+
+### Split large cells to make intermediate results visible
+
+Marimo cells produce output. A single cell that does five things produces one output — or none. Splitting at stage boundaries lets each step show its result, which helps readers understand what changed and why.
+
+**Rule of thumb:** if a cell produces a value worth seeing (a filtered dataset, a record list, a search result), that value should be the last expression in its own cell.
+
+```python
+# Too much in one cell — intermediate state invisible
+filtered = filter_pairs(tatoeba, keywords)
+english = extract_sentences(filtered, lang="en")
+records = to_records(english, column="sentence")
+index.upsert_records(records=records, namespace=namespace)
+```
+
+```python
+# Split: each step's output is inspectable
+# Cell 1
+filtered_pairs = filter_pairs(tatoeba, keywords=keywords)
+
+# Cell 2 — reader can see what was extracted
+english = extract_sentences(filtered_pairs, lang="en")
+mo.ui.table(english, page_size=5)
+
+# Cell 3 — reader can see the record format before upserting
+records = to_records(english, column="sentence")
+mo.ui.table(records, page_size=5)
+
+# Cell 4 — upsert is its own step
+for start in mo.status.progress_bar(range(0, len(records), batch_size)):
+    index.upsert_records(records=records[start:start + batch_size], namespace=namespace)
+```
+
+### Extract reusable helpers into their own cells
+
+If a function is called more than once, or could reasonably be called with different arguments, give it its own cell. Readers can read the definition once, then see it used cleanly at each call site.
+
+The search notebook pattern is a good model:
+
+```python
+# One cell defines the helper
+def search(query, top_k=10, lang=None):
+    results = index.search(
+        namespace=namespace,
+        top_k=top_k,
+        inputs={"text": query},
+        filter={"lang": {"$eq": lang}} if lang else None,
+    )
+    return print_results(query, results)
+
+# Subsequent cells are just clean call sites
+search("I want to go to the park and relax")
+search("Quiero ir al parque a relajarme")
+search("The park is crowded today", lang="en")
+```
+
+### Parameterize functions — avoid globals
+
+Converted notebooks often have functions that silently close over global variables (`keywords`, `index`, `namespace`). This makes the function hard to reuse and hides dependencies.
+
+**Before (globals):**
+```python
+keywords = ["park"]
+
+def prepare_sentences(dataset):
+    return dataset.filter(lambda x: any(k in x["translation"]["en"] for k in keywords))
+```
+
+**After (explicit parameter):**
+```python
+def prepare_sentences(dataset, keywords=None):
+    if keywords:
+        return dataset.filter(lambda x: any(k in x["translation"]["en"] for k in keywords))
+    return dataset
+```
+
+The exception: functions that close over `index` and `namespace` in a "search" helper are reasonable — they're scoped to the notebook, and the closure reads naturally.
+
 ### Remove over-explaining comments
 
 Only comment on the non-obvious WHY — not on what the code does. Delete comments like:
@@ -239,14 +364,7 @@ Only comment on the non-obvious WHY — not on what the code does. Delete commen
 - `# flatten and shuffle for ease of use`
 - `# Here, we create a record for each sentence in the dataset`
 
-Keep comments that explain constraints, workarounds, or non-obvious choices.
-
-### Decompose monolithic functions
-
-If the converted notebook has a large function doing multiple things, split it:
-- Separate filtering from reshaping from formatting
-- Name each function after its single responsibility
-- Parameterize functions properly — avoid globals captured by closures
+Keep comments that explain constraints, workarounds, or non-obvious choices — especially when a behaviour might surprise a reader (e.g. why a version is pinned, why a parameter is omitted).
 
 ### Avoid multiply-defined variables across cells
 
