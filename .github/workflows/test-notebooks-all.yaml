@@ -9,6 +9,10 @@ on:
         default: 'docs'
         type: string
 
+# Least-privilege default: notebook validation and execution only read the repo.
+permissions:
+  contents: read
+
 jobs:
   validate-notebooks:
     runs-on: ubuntu-latest

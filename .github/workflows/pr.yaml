@@ -6,6 +6,10 @@ on:
     branches:
       - main
 
+# Least-privilege default: lint and notebook tests only read the repo.
+permissions:
+  contents: read
+
 jobs:
   lint:
     uses: './.github/workflows/lint.yaml'

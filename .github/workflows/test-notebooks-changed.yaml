@@ -8,6 +8,10 @@ on:
         type: string
         default: 'main'
 
+# Least-privilege default: change detection and notebook execution only read the repo.
+permissions:
+  contents: read
+
 jobs:
   validate-notebooks:
     runs-on: ubuntu-latest

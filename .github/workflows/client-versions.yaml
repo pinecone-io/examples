@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   workflow_call:
 
+# Least-privilege default: this report only reads the repo to census notebooks.
+permissions:
+  contents: read
+
 jobs:
   analyze-client-versions:
     runs-on: ubuntu-latest
