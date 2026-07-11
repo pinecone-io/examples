@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   workflow_call:
 
+# All jobs only read the checkout; no writes via GITHUB_TOKEN.
+permissions:
+  contents: read
+
 jobs:
   analyze-client-versions:
     runs-on: ubuntu-latest

@@ -8,6 +8,10 @@ on:
         type: string
         default: 'main'
 
+# All jobs only read the checkout; no writes via GITHUB_TOKEN.
+permissions:
+  contents: read
+
 jobs:
   validate-notebooks:
     runs-on: ubuntu-latest

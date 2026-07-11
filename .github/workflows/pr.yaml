@@ -6,6 +6,10 @@ on:
     branches:
       - main
 
+# All jobs only read the checkout; no writes via GITHUB_TOKEN.
+permissions:
+  contents: read
+
 jobs:
   lint:
     uses: './.github/workflows/lint.yaml'
