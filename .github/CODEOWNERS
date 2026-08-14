@@ -1,0 +1,5 @@
+# CODEOWNERS
+# Auto-requests review from the owners below on every pull request.
+# Docs: https://docs.github.com/articles/about-code-owners
+
+* @pinecone-io/dev-advocates
