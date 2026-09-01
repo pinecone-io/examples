@@ -28,6 +28,7 @@ ignore_links = [
     "app.pinecone.io",  # we don't need to spam our own homepage
     "q4cdn.com",  # CDN returns 451 for HEAD requests but works with GET
     "prod-1-data.ke.pinecone.io",  # internal API endpoint requiring auth
+    "aistudio.google.com",  # redirects to Google sign-in, requires auth
 ]
 
 known_good_links = set(known_good)
