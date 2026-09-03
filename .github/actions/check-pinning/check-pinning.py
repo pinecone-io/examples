@@ -57,6 +57,22 @@ def is_pinned(package: str) -> bool:
     return bool(re.search(r"[<>=!~]", package))
 
 
+def join_continuations(source: str) -> list[str]:
+    joined = []
+    buffer = ""
+    for raw_line in source.split("\n"):
+        stripped = raw_line.rstrip()
+        if stripped.endswith("\\"):
+            buffer += stripped[:-1] + " "
+        else:
+            buffer += raw_line
+            joined.append(buffer)
+            buffer = ""
+    if buffer:
+        joined.append(buffer)
+    return joined
+
+
 def check_notebook(notebook_path: str) -> list[str]:
     unpinned = []
     try:
@@ -67,8 +83,7 @@ def check_notebook(notebook_path: str) -> list[str]:
             if cell.cell_type != "code":
                 continue
 
-            source = cell.source
-            lines = source.split("\n")
+            lines = join_continuations(cell.source)
 
             for line in lines:
                 line = line.strip()
