@@ -29,6 +29,7 @@ ignore_links = [
     "q4cdn.com",  # CDN returns 451 for HEAD requests but works with GET
     "prod-1-data.ke.pinecone.io",  # internal API endpoint requiring auth
     "aistudio.google.com",  # redirects to Google sign-in, requires auth
+    "docs.pinecone.io/reference/api/latest/",  # intentional permalink redirect to the current API version; not a general allowance for redirects
 ]
 
 known_good_links = set(known_good)
