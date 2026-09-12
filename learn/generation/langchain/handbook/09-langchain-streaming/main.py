@@ -9,11 +9,11 @@ from queue import Queue
 from pydantic import BaseModel
 
 from langchain.agents import AgentType, initialize_agent
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.callbacks.streaming_aiter import AsyncIteratorCallbackHandler
 from langchain.callbacks.streaming_stdout_final_only import FinalStreamingStdOutCallbackHandler
-from langchain.schema import LLMResult
+from langchain_core.outputs import LLMResult
 
 app = FastAPI()
 

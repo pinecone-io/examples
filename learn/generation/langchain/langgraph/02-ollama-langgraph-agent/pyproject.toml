@@ -7,8 +7,11 @@ readme = "README.md"
 package-mode = false
 
 [tool.poetry.dependencies]
+langchain-community = ">=0.0.20"
+langchain-openai = ">=0.0.5"
+langchain-text-splitters = ">=0.0.1"
 python = ">=3.10,<3.13"
-langchain = "0.2.12"
+langchain = ">=0.1"
 langchain-core = "0.2.43"
 langgraph = "0.2.3"
 langchain-ollama = "0.1.1"
