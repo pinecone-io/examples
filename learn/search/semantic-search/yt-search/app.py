@@ -4,8 +4,8 @@ from sentence_transformers import SentenceTransformer
 
 @st.experimental_singleton
 def init_pinecone():
-    pinecone.init(api_key="<<YOUR_API_KEY>>", environment="us-west1-gcp")
-    return pinecone.Index('youtube-search')
+    pc = Pinecone(api_key="<<YOUR_API_KEY>>")
+    return pc.Index('youtube-search')
     
 @st.experimental_singleton
 def init_retriever():
